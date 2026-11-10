@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rencontre dans le train — Les Roses du destin</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Lora:wght@400;500&family=Merriweather:wght@400&family=Playfair+Display:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#faf7f2;--fg:#2b2622;--mut:#8a7f74;--acc:#a8442f;--card:#f1ebe2;--line:#e3dacd;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root[data-theme=sepia]{--bg:#f2e6cf;--fg:#3b2f20;--mut:#8a7556;--acc:#9a3f22;--card:#eadbbd;--line:#d9c7a3}
+:root[data-theme=nuit]{--bg:#16181d;--fg:#d9d4ca;--mut:#8b8a86;--acc:#d9805f;--card:#1f2229;--line:#2d313a;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:Inter,system-ui,sans-serif;transition:background .3s,color .3s}
+#bar{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;gap:8px;padding:calc(8px + env(safe-area-inset-top,0px)) 14px 8px;background:var(--bg);border-bottom:1px solid var(--line)}
+#bar b{flex:1;font:600 17px 'Cormorant Garamond',Georgia,serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#prog{position:absolute;left:0;bottom:-1px;height:2px;background:var(--acc);width:0}
+button,select,input{font:inherit;color:inherit}
+.btn{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer;font-size:14px}
+.btn:hover{border-color:var(--acc)}
+.btn.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+#cover{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:90px 24px 40px}
+#cover h1{font:500 clamp(40px,9vw,76px)/1.05 'Cormorant Garamond',Georgia,serif;margin:0 0 6px;letter-spacing:.02em}
+#cover h2{font:400 18px 'Lora',Georgia,serif;color:var(--acc);margin:0 0 28px;letter-spacing:.2em;text-transform:uppercase}
+#cover p{max-width:420px;font:italic 17px/1.6 'Lora',Georgia,serif;color:var(--mut);margin:0 0 30px}
+#cover .rose{font-size:44px;margin-bottom:18px}
+#cover .btn{font-size:16px;padding:10px 26px}
+#read{display:none;padding:80px 20px 60px}
+#page{margin:0 auto;max-width:var(--w,680px);font-family:var(--ff);font-size:var(--fs);line-height:var(--lh);text-align:var(--ta)}
+#page .pn{font:500 13px Inter,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--acc);text-align:center;margin:0}
+#page h3{font:500 calc(var(--fs)*1.9)/1.15 'Cormorant Garamond',Georgia,serif;text-align:center;margin:8px 0 36px}
+#page p{margin:0;text-indent:var(--ind)}
+#page p.dlg,#page p.first{text-indent:0}
+#page p+p{margin-top:var(--ps)}
+.dc p.first::first-letter{font:500 3.4em/.8 'Cormorant Garamond',Georgia,serif;float:left;padding:6px 8px 0 0;color:var(--acc)}
+#nav{display:flex;justify-content:space-between;gap:10px;max-width:var(--w,680px);margin:48px auto 0}
+.panel{position:fixed;top:0;bottom:0;z-index:30;width:min(340px,92vw);background:var(--bg);border:1px solid var(--line);padding:calc(18px + env(safe-area-inset-top,0px)) 18px 24px;overflow-y:auto;transition:transform .3s}
+#toc{left:0;transform:translateX(-105%)}
+#set{left:0;right:0;top:auto;bottom:0;width:100%;max-height:46vh;border-radius:16px 16px 0 0;transform:translateY(105%);padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
+.panel.open{transform:none!important;box-shadow:0 0 40px rgba(0,0,0,.25)}
+.panel h4{font:600 22px 'Cormorant Garamond',Georgia,serif;margin:0 0 14px}
+.ph{display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:1;background:var(--bg);margin:0 0 14px!important;padding:2px 0 8px}
+.row{margin:0 0 16px}.row label{display:flex;justify-content:space-between;font-size:13px;color:var(--mut);margin-bottom:6px}
+.row input[type=range]{width:100%;accent-color:var(--acc)}
+.row input[type=text],.row select{width:100%;padding:7px 9px;background:var(--card);border:1px solid var(--line);border-radius:8px}
+.seg{display:flex;gap:6px}.seg .btn{flex:1;padding:6px 4px;text-align:center}
+.toc-i{display:block;width:100%;text-align:left;padding:11px 12px;margin-bottom:6px;background:var(--card);border:1px solid var(--line);border-radius:8px;cursor:pointer}
+.toc-i small{display:block;color:var(--acc);font-size:11px;letter-spacing:.15em;text-transform:uppercase}
+.toc-i.cur{border-color:var(--acc)}
+#ov{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:25;display:none}
+.hint{font-size:12px;color:var(--mut);line-height:1.5;margin:6px 0 0}
+</style>
+</head>
+<body>
+<div id="bar"><button class="btn" id="bToc" aria-label="Sommaire">☰</button><b id="bt"></b><button class="btn" id="bPlay" aria-label="Défilement automatique">▶</button><button class="btn" id="bSet" aria-label="Réglages">Aa</button><div id="prog"></div></div>
+
+<section id="cover">
+  <div class="rose">🌹</div>
+  <h2 id="cAuth"></h2>
+  <h1 id="cTitle"></h1>
+  <p id="cSub"></p>
+  <button class="btn on" id="start">Commencer la lecture</button>
+</section>
+
+<main id="read"><article id="page"></article><div id="nav"><button class="btn" id="prev">← Précédent</button><button class="btn" id="next">Suivant →</button></div></main>
+
+<div id="ov"></div>
+<aside class="panel" id="toc"><h4 class="ph">Sommaire<button class="btn x" aria-label="Fermer">✕</button></h4><div id="tocList"></div></aside>
+<aside class="panel" id="set">
+  <h4 class="ph">Réglages<button class="btn x" aria-label="Fermer">✕</button></h4>
+  <div class="row"><label>Thème</label><div class="seg" id="sTheme"><button class="btn" data-v="clair">Clair</button><button class="btn" data-v="sepia">Sépia</button><button class="btn" data-v="nuit">Nuit</button></div></div>
+  <div class="row"><label>Police</label><select id="sFont"><option value="Lora">Lora (élégante)</option><option value="Cormorant Garamond">Cormorant</option><option value="Georgia">Georgia</option><option value="Merriweather">Merriweather</option><option value="Playfair Display">Playfair Display</option><option value="Inter">Inter (sans serif)</option></select></div>
+  <div class="row"><label>Taille du texte <span id="vFs"></span></label><input type="range" id="sFs" min="14" max="30" step="1"></div>
+  <div class="row"><label>Interligne <span id="vLh"></span></label><input type="range" id="sLh" min="1.3" max="2.3" step=".05"></div>
+  <div class="row"><label>Largeur de page <span id="vW"></span></label><input type="range" id="sW" min="480" max="900" step="10"></div>
+  <div class="row"><label>Espace entre paragraphes <span id="vPs"></span></label><input type="range" id="sPs" min="0" max="1.4" step=".1"></div>
+  <div class="row"><label>Vitesse de défilement auto (▶) <span id="vSp"></span></label><input type="range" id="sSp" min="10" max="200" step="5"></div>
+  <div class="row"><label>Alignement</label><div class="seg" id="sTa"><button class="btn" data-v="left">Gauche</button><button class="btn" data-v="justify">Justifié</button></div></div>
+  <div class="row"><label>Retrait de première ligne</label><div class="seg" id="sInd"><button class="btn" data-v="0">Non</button><button class="btn" data-v="1.5em">Oui</button></div></div>
+  <div class="row"><label>Lettrine</label><div class="seg" id="sDc"><button class="btn" data-v="0">Non</button><button class="btn" data-v="1">Oui</button></div></div>
+  <hr style="border:0;border-top:1px solid var(--line);margin:20px 0">
+  <div class="row"><label>Titre du roman</label><input type="text" id="sTitle"></div>
+  <div class="row"><label>Auteur / sous-titre</label><input type="text" id="sAuth"></div>
+  <div class="row"><label>Texte de présentation</label><input type="text" id="sSub"></div>
+  <div class="row"><label>Ajouter des chapitres</label>
+    <button class="btn" id="bImp">Importer des fichiers .txt / .md</button>
+    <input type="file" id="fImp" accept=".txt,.md,text/plain" multiple hidden>
+    <p class="hint" id="impMsg">Chaque fichier doit contenir des titres de type « PARTIE II — TITRE ». Les chapitres sont triés et les doublons remplacés.</p></div>
+  <button class="btn" id="bReset">Réinitialiser les réglages</button>
+</aside>
+
+<script>
+const DEF={theme:window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'nuit':'clair',font:'Lora',fs:19,lh:1.75,w:680,ps:0,sp:40,ta:'left',ind:'1.5em',dc:'1',title:'Rencontre dans le train',auth:'Les Roses du destin',sub:'Une rencontre dans un train, deux âmes en voyage et un amour qui apprend à fleurir.'};
+let S={...DEF},CH=[],cur=-1;
+const $=id=>document.getElementById(id);
+try{Object.assign(S,JSON.parse(localStorage.getItem('rdt-set')||'{}'))}catch(e){}
+const save=()=>{try{localStorage.setItem('rdt-set',JSON.stringify(S))}catch(e){}};
+const ROM={I:1,V:5,X:10,L:50,C:100};
+const rn=s=>[...s].reduce((a,c,i,r)=>a+((ROM[r[i+1]]||0)>ROM[c]?-ROM[c]:ROM[c]),0);
+
+const PART1=`Le train quitta la gare de Casa-Voyageurs avec le léger heurt caractéristique des wagons qui s’arriment à leur rythme. Salim sentit d’abord la vibration sous ses pieds, puis le long soupir métallique qui parcourut le plancher jusqu’à sa colonne vertébrale. Il s’était installé côté fenêtre, dans le sens de la marche, comme il le faisait toujours. La place d’en face restait libre. Celle d’à côté aussi. Il posa son manteau soigneusement plié sur le dossier, rangea son sac sous le siège et ouvrit le livre qu’il n’avait pas l’intention de lire tout de suite.
+
+Dehors, Casablanca s’effaçait déjà. Les immeubles bas, les hangars, les terrains vagues encore rouges de la dernière pluie, puis les premiers champs d’oliviers qui s’étiraient sous une lumière de fin d’après-midi. Le ciel avait cette couleur particulière du Maroc en octobre : ni tout à fait bleu, ni tout à fait gris, comme une promesse hésitante. Salim regarda sans vraiment voir. Il voyageait pour rejoindre un chantier près de Fès, une restauration de riad qu’il suivait depuis six mois. Rien d’urgent. Rien de dramatique. Juste le travail qui l’obligeait à quitter la ville deux jours.
+
+Il avait quarante-cinq ans. Il le savait de façon précise, presque clinique, comme on connaît le poids d’un objet qu’on a longtemps porté. Son visage portait les marques d’une vie rangée : des rides fines aux coins des yeux, une mâchoire encore ferme, des cheveux noirs grisonnants aux tempes qu’il ne cherchait plus à teindre. Il s’habillait simplement. Chemise blanche légèrement froissée, pantalon sombre, chaussures confortables. Rien qui attirât le regard. Il préférait observer.
+
+Le wagon n’était pas plein. Quelques étudiants, une famille avec un enfant qui dormait déjà, un homme d’affaires au téléphone qui baissait la voix par intermittence. Le bruit des roues sur les rails formait une musique monotone, régulière, presque apaisante. Salim ferma les yeux un instant. Il pensait à rien de particulier. Ou plutôt à trop de choses à la fois pour qu’aucune ne prenne vraiment forme : le devis à revoir, le message de son associé resté sans réponse, la solitude tranquille de son appartement à Anfa, la façon dont le silence s’installait le soir lorsqu’il rentrait.
+
+Puis la porte du compartiment s’ouvrit.
+
+Il ne leva pas immédiatement la tête. Les gens montaient et descendaient. Rien d’inhabituel. Mais quelque chose changea dans l’air. Une présence. Une variation presque imperceptible dans le poids de l’espace. Il releva les yeux.
+
+Elle s’arrêta un instant dans l’allée, regardant les numéros des places. Une valise souple d’une main, un sac en bandoulière de l’autre. Elle cherchait la 14. Celle d’en face de lui.
+
+Salim la regarda sans le vouloir vraiment. Ou plutôt, il la vit avant d’avoir décidé de la voir.
+
+Elle était belle. Pas d’une beauté qui s’impose, qui réclame. D’une beauté qui s’installe, discrète et certaine. Le visage fin, le front haut, les sourcils naturellement dessinés. Les yeux sombres, larges, un peu en amande, portaient une expression à la fois attentive et retenue. Ses cheveux noirs, épais, étaient relevés en un chignon imparfait d’où s’échappaient quelques mèches. Elle portait une robe longue couleur terre cuite, simple, qui soulignait la ligne de ses épaules sans les exposer. Une veste légère sur le bras. Aucun bijou visible, sauf une fine chaîne au cou.
+
+Elle s’excusa d’un mouvement de tête lorsqu’elle passa devant lui pour atteindre sa place. Sa voix, lorsqu’elle murmura « Pardon », était basse, claire, légèrement rauque.
+
+— Ce n’est rien, répondit Salim.
+
+Elle s’assit. Rangea sa valise dans le filet à bagages avec une efficacité calme, puis s’installa. Pendant quelques secondes, elle resta immobile, les mains croisées sur ses genoux, regardant par la fenêtre. Puis elle sortit un carnet et un stylo de son sac. Elle écrivit quelques lignes, s’arrêta, regarda dehors, recommença.
+
+Salim essaya de reprendre son livre. Les mots glissaient. Il n’en retenait aucun. La présence de la femme en face de lui occupait un espace trop précis dans son champ de perception. Il n’était pas le genre d’homme à s’attarder sur une inconnue. Il le savait. Pourtant, quelque chose en elle retenait son attention sans effort. Pas seulement le visage. La façon dont elle tenait son stylo. La concentration absente de son regard lorsqu’elle s’interrompait. La ligne de sa nuque lorsqu’elle penchait légèrement la tête.
+
+Le train traversait maintenant la plaine. Les oliviers cédaient la place à des champs plus ouverts. Le soleil baissait. La lumière entrait en biais par les vitres et dessinait des rectangles dorés sur le sol du wagon.
+
+Au bout d’un moment, elle leva les yeux et croisa son regard.
+
+Ce ne fut qu’une fraction de seconde. Elle ne sourit pas. Elle ne détourna pas non plus immédiatement le regard. Elle le regarda simplement, comme on regarde quelque chose qui se trouve là, sans encore décider de ce qu’on en pense. Puis elle baissa les yeux vers son carnet.
+
+Salim sentit une légère chaleur derrière ses oreilles. Rien de plus. Il se tourna vers la fenêtre.
+
+Ils restèrent ainsi un long moment. Le silence du compartiment n’était pas pesant. Il était simplement là, peuplé du bruit du train et des conversations lointaines des autres voyageurs. À un moment, l’enfant qui dormait se réveilla et se mit à pleurer doucement. Sa mère le calma d’une berceuse murmurée. La femme en face de Salim leva les yeux, observa la scène un instant, puis reporta son attention sur son carnet. Son expression s’était adoucie.
+
+Salim se demanda ce qu’elle écrivait. Un journal ? Des notes de travail ? Une lettre qu’elle n’enverrait jamais ? Il se surprit à inventer des hypothèses. C’était inhabituel chez lui. Il préférait généralement laisser les inconnus dans leur mystère.
+
+Le train ralentit pour un arrêt bref dans une petite gare. Quelques passagers descendirent. D’autres montèrent. La place à côté de Salim resta libre. Celle d’à côté de la femme aussi.
+
+Lorsqu’ils repartirent, elle rangea son carnet et sortit une gourde. Elle but une gorgée, puis une seconde. Une goutte d’eau resta suspendue à sa lèvre inférieure un instant avant qu’elle ne l’essuie du dos de la main. Le geste était simple, presque enfantin. Salim détourna les yeux.
+
+Il se demanda s’il devait dire quelque chose. Quoi ? Une remarque sur le paysage ? Sur le retard éventuel du train ? Tout cela lui parut soudain ridicule. Il n’était pas un homme de conversation facile avec les inconnus. Il savait parler lorsqu’il le fallait — avec les artisans sur les chantiers, avec les clients, avec ses rares amis. Mais ici, dans ce wagon, face à cette femme qui semblait suffire à elle-même, les mots lui paraissaient inutiles.
+
+Pourtant, au bout d’un moment, ce fut elle qui parla.
+
+— Vous allez jusqu’à Fès ?
+
+Sa voix était celle qu’il avait entendue plus tôt, basse et claire. Elle n’avait pas levé le ton. Elle avait simplement posé la question comme on pose une question ordinaire.
+
+Salim la regarda. Elle le regardait aussi, cette fois franchement.
+
+— Oui. Vous aussi ?
+
+— Non. Je m’arrête à Meknès.
+
+Il hocha la tête. Un silence. Puis, parce qu’il fallait bien continuer un peu :
+
+— Vous y allez souvent ?
+
+Elle sembla peser sa réponse.
+
+— De temps en temps. Pour le travail.
+
+Elle n’en dit pas plus. Il n’insista pas. Il appréciait les gens qui savaient s’arrêter.
+
+— Et vous ? demanda-t-elle après un instant. Le chantier ?
+
+Il sourit malgré lui. Elle avait deviné, ou bien elle avait simplement remarqué quelque chose dans son attitude.
+
+— Oui. Un riad. Une restauration. Rien de spectaculaire.
+
+— Les choses qui ne sont pas spectaculaires sont souvent les plus intéressantes.
+
+Il la regarda plus attentivement. Elle n’avait pas dit cela pour faire joli. Elle semblait le penser.
+
+— C’est ce que j’essaie d’expliquer à certains clients, répondit-il. Ils veulent parfois trop de lumière, trop d’ouvertures, trop de modernité. Ils oublient que les murs anciens ont besoin de respirer à leur rythme.
+
+Elle pencha légèrement la tête.
+
+— Vous êtes architecte ?
+
+— Oui. Enfin… j’essaie de l’être encore, malgré les années.
+
+Un léger sourire effleura ses lèvres. Pas un sourire de politesse. Quelque chose de plus vrai, plus bref.
+
+— Les années ne rendent pas nécessairement moins capable. Elles rendent parfois plus précis.
+
+Salim ne répondit pas tout de suite. Il regarda par la fenêtre. Les collines commençaient à se dessiner à l’horizon. La lumière devenait plus chaude, plus basse.
+
+— Vous travaillez dans quoi ? demanda-t-il finalement.
+
+— La photographie. Enfin, plutôt la documentation photographique. Patrimoine, architecture traditionnelle, parfois des reportages plus personnels.
+
+Il hocha la tête, intéressé malgré lui.
+
+— C’est pour ça le carnet ?
+
+Elle jeta un regard à l’objet posé sur ses genoux.
+
+— Entre autres. J’écris ce que je ne peux pas photographier. Les détails qui échappent. Les impressions. Les choses qui n’ont pas encore de forme.
+
+Un silence s’installa de nouveau. Mais il n’était plus tout à fait le même. Il avait une texture différente. Moins anonyme.
+
+Le train traversait maintenant une zone plus vallonnée. Des oliviers encore, des figuiers de Barbarie, des maisons basses dispersées. Un berger guidait un petit troupeau loin de la voie. Salim observa le paysage un moment, puis reporta son attention sur elle.
+
+Elle regardait aussi dehors. Le profil net, le menton légèrement relevé. La lumière du soir dessinait la courbe de sa joue, l’ombre de ses cils. Elle était belle, oui. Mais ce n’était plus seulement cela qui le retenait. C’était la façon dont elle occupait l’espace sans le réclamer. La façon dont elle parlait sans se presser. La façon dont elle semblait à la fois présente et légèrement à distance d’elle-même.
+
+— Vous aimez voyager en train ? demanda-t-elle soudain, sans tourner la tête.
+
+— Oui. Plus que l’avion. On voit le pays. On a le temps de penser. Ou de ne pas penser.
+
+Elle sourit à la vitre.
+
+— C’est rare, les gens qui admettent qu’ils aiment ne pas penser.
+
+— Je n’ai pas dit que j’y arrivais toujours.
+
+Elle se tourna alors vers lui. Ses yeux le fixèrent un instant de plus qu’il n’était strictement nécessaire.
+
+— Moi non plus.
+
+Le silence qui suivit fut plus dense. Pas gênant. Juste… chargé d’une attention mutuelle nouvelle.
+
+Ils parlèrent encore un peu. De choses ordinaires. Du retard éventuel à Meknès. De la qualité de la lumière en octobre. D’un livre qu’elle avait vu dans les mains d’un autre voyageur plus loin dans le wagon. Rien d’important. Rien qui engageât. Mais chaque phrase semblait laisser une petite trace, comme des pas dans un sol encore humide.
+
+À un moment, le train entra dans un tunnel. L’obscurité fut brève. Lorsqu’ils ressortirent, la lumière avait encore changé. Le soleil touchait presque l’horizon. Les ombres s’allongeaient.
+
+Elle rangea son carnet dans son sac. Vérifia l’heure sur son téléphone. Meknès approchait.
+
+Salim sentit quelque chose se resserrer légèrement dans sa poitrine. Rien de dramatique. Juste la conscience soudaine que cette conversation allait s’interrompre, et que rien ne garantissait qu’elle reprendrait un jour.
+
+Elle se leva lorsqu’on annonça la gare. Prit sa valise. Il se leva aussi, par politesse, pour l’aider à descendre le bagage du filet. Leurs mains se frôlèrent un instant. Rien de volontaire. Juste le contact bref de deux peaux.
+
+— Merci, dit-elle.
+
+Sa voix était un peu plus basse.
+
+Elle s’arrêta dans l’allée, un pied déjà tourné vers la porte. Elle le regarda une dernière fois.
+
+— Bon voyage jusqu’à Fès.
+
+— Merci. Et… bon travail à Meknès.
+
+Elle hocha la tête. Un dernier regard. Puis elle disparut dans le couloir.
+
+Salim se rassit. La place en face de lui était vide maintenant. Le carnet n’était plus là. La robe couleur terre cuite non plus. Il resta immobile un long moment, regardant le quai défiler, puis s’éloigner.
+
+Il ne savait pas son nom. Il ne savait presque rien d’elle. Et pourtant, quelque chose demeurait. Une présence. Une voix. Un regard qui n’avait pas fui tout de suite.
+
+Le train repartit vers Fès. La nuit tombait. Salim rouvrit son livre. Les mots, cette fois encore, glissaient.
+
+Mais dans un coin de sa conscience, une image persistait : une femme assise en face de lui, écrivant dans un carnet, pendant que le paysage défilait derrière la vitre, et que le destin, sans bruit, prenait peut-être un autre chemin.`;
+
+const addCh=(n,title,text)=>{const i=CH.findIndex(c=>c.n===n);const c={n,title,text:text.trim()};i<0?CH.push(c):CH[i]=c;CH.sort((a,b)=>a.n-b.n)};
+const PART2=`Le train n’avait pas encore repris toute sa vitesse lorsque Salim se rendit compte qu’il n’avait pas rouvert son livre. Il le tenait simplement entre ses mains, les pages légèrement écartées, comme s’il attendait que les mots se mettent d’eux-mêmes à avancer. La place en face de lui restait vide. La lumière du soir, plus basse maintenant, glissait sur le dossier abandonné et dessinait une ombre longue qui changeait à chaque courbe de la voie.
+
+Il pensait encore à la façon dont elle avait dit « les choses qui ne sont pas spectaculaires sont souvent les plus intéressantes ». La phrase n’avait rien d’extraordinaire. Pourtant elle s’était posée en lui avec une précision étrange, comme une pierre que l’on place soigneusement sur un rebord. Il se demanda ce qu’elle photographiait exactement. Des portes sculptées ? Des plafonds de cèdre ? Des mains d’artisans au travail ? Ou bien des choses plus fugitives : la poussière dans un rayon de soleil, l’ombre d’un palmier sur un mur d’argile, le visage d’un enfant qui regarde passer le train.
+
+Le wagon se remit en mouvement. Les rails chantèrent à nouveau leur litanie métallique. Salim reporta son regard vers la fenêtre. Les collines s’étaient adoucies. On apercevait au loin les lumières d’un village, petites et tremblantes déjà dans le crépuscule qui s’installait. Il essaya de se concentrer sur le chantier qui l’attendait. Les plans du patio. La question de la ventilation naturelle. Le devis du zellige. Mais les images glissaient. À leur place revenait le profil de la femme, la ligne de sa nuque, le geste presque enfantin avec lequel elle avait essuyé la goutte d’eau sur sa lèvre.
+
+Il n’aimait pas ce genre de distraction. Il la jugeait inutile, presque indécente à son âge. Quarante-cinq ans. Assez pour savoir que les rencontres de train restent le plus souvent ce qu’elles sont : des parenthèses. Des conversations sans lendemain. Des regards qui s’effacent dès que le quai s’éloigne. Et pourtant, quelque chose résistait à cette sagesse raisonnable. Une curiosité tenace, discrète, qui ne demandait rien d’autre que de rester un peu plus longtemps dans le même espace qu’elle.
+
+Le contrôleur passa. Salim tendit son billet sans vraiment regarder. Lorsque l’homme s’éloigna, il se surprit à espérer, sans oser se l’avouer clairement, que la place en face resterait libre jusqu’à Meknès. L’idée était absurde. Des voyageurs pouvaient encore monter. Mais le compartiment, pour l’instant, conservait son équilibre fragile.
+
+Quelques minutes plus tard, la porte coulissa de nouveau. Elle revint.
+
+Elle n’avait pas changé de place. Elle avait simplement été chercher quelque chose — peut-être de l’eau, peut-être un autre carnet — et maintenant elle se rasseyait en face de lui avec la même simplicité qu’auparavant. Salim sentit une détente presque physique dans sa poitrine. Il ne sourit pas. Il se contenta de l’accueillir d’un léger mouvement de tête.
+
+Elle rangea son sac, croisa les jambes, et posa de nouveau le carnet sur ses genoux. Cette fois, elle ne l’ouvrit pas tout de suite. Elle regarda par la fenêtre un long moment, puis se tourna vers lui.
+
+— Vous n’avez pas l’air de quelqu’un qui lit vraiment, dit-elle.
+
+La remarque était directe, mais sans agressivité. Juste une observation posée là, comme on pose un objet sur une table.
+
+Salim baissa les yeux vers le livre.
+
+— C’est vrai. Je fais souvent semblant. Ça évite les conversations trop faciles.
+
+Elle eut un petit rire, presque silencieux.
+
+— Et les conversations difficiles ?
+
+— Celles-là, je ne les fuis pas toujours. Mais je ne les cherche pas non plus.
+
+Elle hocha la tête, comme si la réponse lui convenait.
+
+— Moi, j’écris pour la même raison. Pour ne pas avoir à parler tout de suite. Et puis, parfois, les mots sur le papier disent mieux ce que la voix n’ose pas.
+
+Il la regarda. La lumière du soir prenait maintenant une teinte plus chaude, presque ambrée. Elle se posait sur son visage et révélait de petites nuances qu’il n’avait pas remarquées plus tôt : une légère ombre sous les yeux, la finesse de la peau aux tempes, la façon dont ses sourcils se fronçaient à peine lorsqu’elle réfléchissait.
+
+— Vous écrivez souvent dans les trains ? demanda-t-il.
+
+— Oui. Les trains sont de bons endroits pour les pensées qui n’ont pas encore de forme. On est ni tout à fait ici, ni tout à fait ailleurs. On a le droit d’être un peu en suspens.
+
+Il sourit malgré lui.
+
+— C’est une jolie façon de dire qu’on est en retard sur sa propre vie.
+
+Elle le regarda plus longuement.
+
+— Vous croyez que vous l’êtes ?
+
+La question était douce, mais elle touchait juste. Salim prit le temps de répondre. Il n’aimait pas les réponses trop rapides.
+
+— Je crois que j’ai appris à marcher à mon rythme. Parfois ce rythme est trop lent pour les autres. Parfois il est trop prudent pour moi-même. Je ne sais plus très bien.
+
+Elle ne répondit pas immédiatement. Elle regarda ses propres mains posées sur le carnet.
+
+— Moi, j’ai longtemps cru que la vitesse était une preuve de liberté. Aller vite, décider vite, partir vite. Et puis un jour on se rend compte que certaines choses ne se laissent pas hâter. Elles se ferment si on tire trop fort.
+
+Il pensa à une rose. L’image lui vint sans qu’il l’ait appelée. Une rose encore fermée, qu’on essaierait d’ouvrir de force. Les pétales se déchireraient. Il ne dit rien de cette pensée. Il la garda pour lui, comme un secret trop tôt formé.
+
+Le train ralentit pour un passage à niveau. Une cloche sonna au loin. Des enfants agitaient la main depuis le bord de la route. Elle leur répondit d’un petit signe discret, presque automatique. Le geste était simple, naturel. Salim le nota. Elle n’était pas du genre à ignorer le monde autour d’elle.
+
+Lorsqu’ils reprirent de la vitesse, elle reprit la parole.
+
+— Vous avez dit un riad, près de Fès. C’est un projet personnel ou pour un client ?
+
+— Pour un client. Un Français qui a acheté la maison il y a trois ans et qui veut la rendre « authentique » sans trop savoir ce que cela signifie. On passe beaucoup de temps à lui expliquer qu’authentique ne veut pas dire figé. Que les maisons vivent. Qu’elles ont besoin d’air, de lumière filtrée, de silence aussi.
+
+Elle pencha la tête, attentive.
+
+— J’aime cette idée. Les maisons qui ont besoin de silence.
+
+— Et vous ? demanda-t-il. Vous photographiez plutôt des lieux ou des gens ?
+
+— Les deux. Mais je préfère les lieux lorsqu’ils portent encore la trace des gens. Une porte usée par des milliers de mains. Un seuil poli par les pas. Un mur où quelqu’un a écrit un prénom il y a longtemps. Ces choses-là me touchent davantage qu’un monument parfaitement restauré.
+
+Il la regarda avec un intérêt nouveau. Elle ne parlait pas comme quelqu’un qui cherche à impressionner. Elle parlait comme quelqu’un qui a déjà passé du temps à regarder vraiment.
+
+— C’est pour ça que vous allez à Meknès ?
+
+— Oui. Il y a une médersa dont on restaure les stucs. On m’a demandé de documenter le travail avant, pendant et après. Je préfère le « pendant ». Quand les artisans sont encore là, quand la poussière flotte, quand rien n’est encore décidé.
+
+Salim sourit.
+
+— Moi aussi. Le moment où tout est encore possible. Et fragile.
+
+Leurs regards se croisèrent un instant de plus. Cette fois, ni l’un ni l’autre ne détourna les yeux tout de suite. Il y eut quelque chose de partagé dans ce silence, une reconnaissance discrète. Puis elle baissa les paupières et ouvrit enfin son carnet. Elle écrivit quelques lignes, s’arrêta, regarda dehors, écrivit encore.
+
+Salim n’osa pas demander ce qu’elle notait. Il se contenta de l’observer du coin de l’œil. La façon dont elle tenait le stylo. La concentration de son front. La légère tension de sa lèvre inférieure lorsqu’elle cherchait un mot. Il trouva ces détails plus parlants que bien des confidences.
+
+Une annonce retentit dans le wagon. Meknès dans vingt minutes. La voix était neutre, presque lasse. Salim sentit de nouveau ce petit resserrement dans la poitrine. Vingt minutes. C’était peu. Et en même temps, c’était déjà beaucoup plus que ce qu’il avait imaginé en montant dans ce train.
+
+Elle rangea le carnet. Croisa les bras. Regarda par la fenêtre comme si elle cherchait déjà la gare dans le paysage.
+
+— Vous descendez à la gare centrale ? demanda-t-il, simplement pour ne pas laisser le silence s’installer trop vite.
+
+— Oui. Ensuite un petit taxi jusqu’à la médina. Rien de compliqué.
+
+— Vous connaissez bien Meknès ?
+
+— Assez. J’y ai vécu six mois, il y a quelques années. Pour un autre projet. J’aimais beaucoup la lumière du soir sur les remparts. Elle est différente de celle de Fès. Plus sèche, plus nette.
+
+Il hocha la tête. Il connaissait cette lumière. Il l’avait vue lui aussi, un soir d’hiver, en attendant un artisan qui n’arrivait jamais.
+
+— Et maintenant vous habitez… ?
+
+Elle hésita une fraction de seconde.
+
+— Casablanca. Comme vous, j’imagine.
+
+— Oui. Anfa.
+
+Elle sourit à peine.
+
+— J’habite plus vers Maârif. Moins de mer, plus de bruit. Mais j’aime le bruit, parfois. Il empêche de trop penser.
+
+Il y eut un silence. Puis elle ajouta, plus bas :
+
+— Enfin… pas toujours.
+
+Salim ne répondit pas. Il comprenait. Il connaissait lui aussi ces bruits qu’on cherche pour ne pas entendre autre chose.
+
+Le train ralentissait maintenant de façon plus marquée. Les premières maisons de la périphérie de Meknès défilaient. Des lampadaires s’allumaient un à un. La nuit n’était pas encore totale, mais elle gagnait du terrain.
+
+Elle se leva. Prit sa valise. Salim se leva aussi, cette fois sans prétexte de politesse. Il l’aida simplement à sortir le bagage du filet. Leurs mains se touchèrent de nouveau, un peu plus longtemps que la première fois. Ni l’un ni l’autre ne retira immédiatement la sienne.
+
+— Merci, dit-elle.
+
+Elle resta un instant debout dans l’allée, la valise à ses pieds, le regard posé sur lui.
+
+— Je m’appelle Jamila, dit-elle soudain.
+
+Le prénom tomba entre eux avec une simplicité désarmante. Comme une clé qu’on pose sur une table sans encore savoir si on va s’en servir.
+
+Salim sentit quelque chose s’ouvrir très légèrement dans sa poitrine.
+
+— Salim, répondit-il.
+
+Elle sourit. Un vrai sourire, cette fois. Pas large. Juste assez pour que ses yeux s’éclairent un instant.
+
+— Salim. Ça me va.
+
+Elle n’ajouta rien d’autre. Pas de « peut-être qu’on se reverra ». Pas de « si jamais vous passez à Meknès ». Rien. Seulement ce sourire, et le prénom qui restait suspendu dans l’air du wagon.
+
+Le train s’arrêta. Les portes s’ouvrirent. Elle prit sa valise, jeta un dernier regard vers lui, et disparut dans le flux des voyageurs qui descendaient.
+
+Salim se rassit. La place en face de lui était de nouveau vide. Mais elle n’était plus tout à fait la même. Elle portait maintenant un nom. Jamila. Et ce nom, déjà, changeait quelque chose.
+
+Le train repartit vers Fès. La nuit était tombée. Dehors, les lumières de la ville s’éloignaient. Salim regarda son propre reflet dans la vitre. Il avait l’air d’un homme qui venait de recevoir une nouvelle discrète, presque insignifiante, et qui pourtant savait déjà qu’il n’allait pas l’oublier de sitôt.
+
+Il rouvrit son livre. Les pages étaient toujours les mêmes. Mais quelque part, entre les lignes, une autre histoire avait commencé à s’écrire. Une histoire dont il ne connaissait encore ni le rythme ni la destination. Seulement le premier signe. Un prénom. Un regard. Et le bruit régulier des roues qui emportait le train plus loin dans la nuit.`;
+const PART3=`Le lendemain, à Fès, la lumière était différente. Plus blanche, plus sèche. Elle entrait dans le patio du riad par les ouvreaux du toit et dessinait sur les murs d’anciennes arabesques que le temps avait à moitié effacées. Salim se tenait au centre de la cour, les plans dépliés sur une table improvisée. Autour de lui, les artisans discutaient à voix basse. Le maître zellige montrait du doigt une irrégularité dans le calepinage. Le menuisier secouait la tête. Rien n’était encore décidé. Tout restait possible, et fragile.
+
+Salim écoutait. Il notait. Il posait des questions précises. C’était son métier, et il l’exerçait avec la même attention qu’à l’ordinaire. Pourtant, à certains moments, son esprit s’absentait. Une phrase revenait sans prévenir : « Les choses qui ne sont pas spectaculaires sont souvent les plus intéressantes. » Il la chassait. Elle revenait plus tard, lorsque le soleil touchait le bord du patio et que la poussière se mettait à danser dans le rayon. Il pensait alors à une main tenant un stylo, à un carnet ouvert sur des genoux, à une voix basse qui disait les choses sans les forcer.
+
+Il ne s’attardait pas. Il n’avait aucune raison de le faire. Une conversation de train. Un prénom. Jamila. Rien de plus. Les rencontres de ce genre s’effaçaient d’elles-mêmes si on ne les nourrissait pas. Il le savait. Et pourtant, le soir, dans la petite chambre qu’il occupait près de la médina, lorsqu’il fermait les yeux, c’était encore cette lumière ambrée du wagon qui revenait, et le profil d’une femme regardant par la fenêtre.
+
+Il resta trois jours à Fès. Le travail avançait lentement, comme il se devait. Les murs anciens ne supportaient pas la précipitation. Le client téléphonait chaque soir, impatient. Salim répondait avec calme. Il expliquait, encore et encore, qu’une restauration digne de ce nom demandait du temps. Que l’authenticité n’était pas un décor qu’on collait. Que les maisons, comme les gens, avaient besoin qu’on respectât leur rythme.
+
+Le quatrième jour, il rentra à Casablanca.
+
+L’appartement d’Anfa l’accueillit avec son silence habituel. Les volets mi-clos. L’odeur un peu fermée des pièces restées vides. Il posa ses affaires, ouvrit les fenêtres, laissa entrer le bruit lointain de la mer. Il se fit un café, s’assit face à la table basse, et resta longtemps sans bouger. Sur la table, un livre ouvert depuis des semaines. À côté, le courrier accumulé. Rien n’avait changé. Et pourtant, quelque chose en lui avait bougé d’un millimètre. Assez pour que le silence lui parût légèrement différent.
+
+Les jours suivants reprirent leur cours ordinaire. Réunions au cabinet. Visites de chantiers dans la ville. Dîners rapides avec son associé, Karim, qui parlait fort et riait facilement. Salim écoutait, souriait aux bons moments, répondait quand il le fallait. Personne ne remarqua rien. Il n’y avait d’ailleurs rien à remarquer. Seulement, parfois, au détour d’une rue, une robe couleur terre cuite lui faisait tourner la tête. Ou bien une femme écrivant dans un carnet, assise à la terrasse d’un café, lui donnait l’illusion d’un instant déjà vécu. Il détournait les yeux. Il se disait que c’était ridicule. Et le soir, seul, il se surprenait à chercher le prénom dans sa mémoire, comme on vérifie qu’un objet est toujours à sa place.
+
+Jamila.
+
+Le prénom avait une douceur particulière. Il ne le prononçait pas à voix haute. Il le gardait.
+
+De son côté, Jamila avait passé quatre jours à Meknès.
+
+La médersa sentait la poussière et le plâtre frais. Les artisans travaillaient avec une concentration presque religieuse. Elle photographiait. Les mains d’abord. Toujours les mains. Puis les outils. Puis les fragments de stuc encore intacts. Elle prenait son temps. Elle savait que les images les plus justes ne se montraient pas tout de suite. Il fallait attendre qu’elles acceptent d’apparaître.
+
+Le soir, dans la petite maison qu’elle louait près de la place Lalla Aouda, elle ouvrait son carnet. Elle notait ce qu’elle n’avait pas pu photographier : le bruit d’une truelle sur la pierre, le rire étouffé d’un apprenti, la façon dont la lumière mourait sur les murs à dix-huit heures. Et parfois, sans l’avoir décidé, elle écrivait autre chose. Une phrase entendue dans un train. Une voix calme qui parlait de maisons ayant besoin de silence. Un regard qui n’avait pas fui tout de suite.
+
+Elle s’arrêtait alors. Refermait le carnet. Se disait que c’était sans importance. Une parenthèse. Les trains en étaient pleins. Des gens se parlaient, échangeaient deux ou trois phrases, puis descendaient sur des quais différents et n’y repensaient plus. C’était ainsi. Et pourtant, le calme de cet homme l’avait marquée. Sa façon d’écouter sans interrompre. La précision de ses mots lorsqu’il parlait de son métier. Elle n’avait pas l’habitude de se souvenir aussi longtemps de quelqu’un qu’elle ne reverrait sans doute jamais.
+
+Elle rentra à Casablanca un vendredi soir.
+
+L’appartement de Maârif lui parut plus bruyant que d’habitude. Les klaxons, les conversations dans la cour intérieure, le voisin du dessus qui écoutait de la musique trop fort. Elle aima ce bruit. Il l’empêchait de trop écouter ce qui se passait en elle. Elle rangea ses affaires, chargea les photos sur son ordinateur, passa la soirée à trier les images. Vers minuit, elle s’arrêta sur une photographie de main d’artisan. La lumière y était belle. Elle pensa, sans savoir pourquoi, à une autre lumière : celle qui entrait en biais dans un wagon, un soir d’octobre, et qui dessinait le visage d’un homme qu’elle ne connaissait pas.
+
+Elle ferma l’ordinateur. Se coucha. Le sommeil mit du temps à venir.
+
+Les semaines suivantes se déroulèrent comme elles le devaient.
+
+Jamila enchaîna les projets. Une série sur les portes de la médina de Salé. Un reportage pour une revue d’architecture. Des rencontres avec des éditeurs. Elle voyait des amis. Elle riait. Elle travaillait tard. Par moments, le souvenir du train revenait. Toujours de façon inattendue. Un jour, dans un café de la Corniche, elle entendit un homme expliquer à son interlocuteur qu’il fallait laisser les vieilles maisons respirer. Elle tourna la tête. Ce n’était pas lui. Évidemment. Mais la phrase avait suffi à faire remonter toute la scène : le bruit des roues, la lumière ambrée, la voix posée qui disait « les maisons vivent ».
+
+Elle resta un moment immobile, la tasse entre les mains. Puis elle secoua légèrement la tête, comme pour chasser une poussière, et reprit sa conversation.
+
+Salim, de son côté, avançait dans le projet du riad. Il retournait à Fès tous les quinze jours. Entre-temps, la vie casablancaise reprenait ses droits. Un soir, Karim l’entraîna dans un restaurant de la corniche. Ils parlèrent travail, puis de choses plus légères. Karim mentionna une exposition de photographie qui venait d’ouvrir dans une galerie de Gauthier.
+
+— Tu devrais y aller, dit-il. Il y a des images de patrimoine. Ça pourrait t’intéresser pour le dossier du client.
+
+Salim hocha la tête sans s’engager. Les expositions, il n’y allait plus beaucoup. Trop de monde. Trop de conversations superficielles. Pourtant, le lendemain, en rangeant son bureau, il retrouva le carton d’invitation que Karim avait laissé. Il le tourna entre ses doigts. Photographies de médersas, de riads, de détails d’architecture traditionnelle. Le nom de plusieurs photographes figurait en bas. Parmi eux, un prénom qu’il reconnut immédiatement.
+
+Jamila Bennani.
+
+Il resta longtemps à regarder le carton. Le cœur lui battit un peu plus vite, ce qui l’irrita. Ce n’était qu’un nom. Une coïncidence possible. Ou pas. Casablanca n’était pas si grande lorsqu’on travaillait dans les mêmes cercles. Il posa le carton sur la table. Le reprit. Le reposa.
+
+Le soir, seul dans son appartement, il se surprit à chercher sur son ordinateur. Quelques images apparurent. Des photographies sobres, précises, d’une grande douceur. Des mains. Des seuils usés. Des plafonds de cèdre. Une lumière qui savait attendre. Il reconnut immédiatement le regard qui avait pris ces images. Le même regard qui, dans le train, s’était posé sur le paysage avec cette attention particulière.
+
+Il ferma la page. Se leva. Marcha un moment dans le salon. Se dit que c’était absurde. Qu’il n’allait pas se mettre à chercher une inconnue parce qu’ils avaient échangé quelques phrases entre Casa et Meknès. Il avait quarante-cinq ans. Il savait ce que valaient les illusions.
+
+Et pourtant, le carton d’invitation resta sur la table.
+
+Deux jours plus tard, Jamila reçut un appel de la galerie. L’exposition marchait bien. On lui demandait si elle pouvait venir samedi pour une petite rencontre avec le public. Elle accepta. Elle aimait parler de son travail lorsque les questions étaient justes. En raccrochant, elle nota la date dans son agenda. Samedi. Galerie Al-Nur. Gauthier.
+
+Elle ne savait pas encore que, ce même samedi, un homme qu’elle avait rencontré dans un train ouvrirait peut-être la porte de cette galerie, un carton d’invitation à la main, sans être tout à fait certain d’avoir une bonne raison d’y aller.
+
+Le souvenir, jusque-là intermittent, changeait lentement de nature. Il n’était plus seulement une image qui revenait. Il devenait une possibilité.
+
+Une rose encore fermée, quelque part, attendait que la lumière change.`;
+addCh(1,'Le voyage inattendu',PART1);addCh(2,'Les premiers signes',PART2);const PART5=`Le premier message arriva le mardi suivant, en fin d’après-midi.
+
+Salim l’écrivit trois fois avant de l’envoyer. La première version était trop formelle. La deuxième trop légère. La troisième disait simplement :
+
+« Bonjour Jamila. J’espère que l’exposition continue de bien se passer. Seriez-vous libre pour un café un de ces jours ? Salim »
+
+Elle répondit une heure plus tard.
+
+« Bonjour Salim. Oui, avec plaisir. Jeudi en fin d’après-midi vous irait ? »
+
+Ils se retrouvèrent dans un petit café de la Corniche, à l’abri du vent. La mer était grise ce jour-là, agitée. Jamila arriva la première. Elle avait choisi une table près de la baie vitrée. Lorsqu’il la rejoignit, elle leva les yeux et sourit sans détour.
+
+— Vous êtes à l’heure.
+
+— J’ai peur d’être en retard depuis que je suis enfant. C’est une vieille habitude.
+
+— Moi, j’arrive souvent cinq minutes trop tôt. Comme ça j’ai le temps de regarder les gens.
+
+Ils commandèrent. Elle prit un thé à la menthe. Lui un café allongé. La conversation commença par des choses simples : le riad, les photos de la médersa, le bruit de Casablanca le soir. Puis, peu à peu, elle s’approfondit sans effort.
+
+Il lui parla de son travail avec une précision tranquille. Des clients qui voulaient trop vite. Des artisans qui savaient attendre. Elle l’écoutait en tenant sa tasse à deux mains, le regard posé sur lui par intermittence. Lorsqu’elle parla à son tour de son livre en cours, il y avait dans sa voix une concentration presque tendre.
+
+— Je ne veux pas que ce soit un livre sur le patrimoine. Je veux que ce soit un livre sur le temps. Sur ce qui reste quand les gens sont partis.
+
+Salim hocha la tête.
+
+— C’est plus difficile.
+
+— Oui. Mais c’est plus vrai.
+
+Ils restèrent presque deux heures. Lorsque le serveur vint débarrasser, ni l’un ni l’autre ne sembla pressé de partir. Dehors, le vent avait forci. Ils marchèrent un peu le long de la Corniche, sans but précis. À un moment, une rafale plus forte fit voler les cheveux de Jamila. Elle les ramena d’un geste, riant.
+
+— Je devrais toujours prévoir un foulard.
+
+— Ou accepter que le vent décide à votre place.
+
+Elle le regarda de côté.
+
+— Vous aimez quand les choses décident un peu toutes seules ?
+
+— Pas toujours. Mais parfois, oui. Ça évite de tout contrôler.
+
+Elle ne répondit pas. Mais son silence était acquiesçant.
+
+Ils se quittèrent près de sa voiture. Pas d’embrassade. Juste un regard plus long que la première fois, et la promesse vague de se revoir.
+
+La deuxième rencontre eut lieu dix jours plus tard.
+
+Cette fois, c’est elle qui proposa. Une exposition temporaire au Musée de la Villa des Arts, suivie d’une promenade s’il faisait beau. Il accepta immédiatement.
+
+Ils passèrent l’après-midi à marcher entre les salles blanches, s’arrêtant devant les toiles qu’ils aimaient, passant plus vite devant celles qui les laissaient indifférents. Leurs goûts n’étaient pas identiques. Elle préférait les compositions épurées, les grands espaces vides. Lui s’attardait sur les détails, les matières, les textures. Ces différences ne créaient aucune friction. Au contraire. Elles donnaient à la conversation une densité agréable.
+
+— Vous regardez comme un architecte, dit-elle à un moment.
+
+— Et vous comme quelqu’un qui attend que l’image se révèle.
+
+Elle sourit.
+
+— C’est un peu mon métier.
+
+Dehors, le ciel s’était dégagé. Ils marchèrent jusqu’à un jardin public proche. Les enfants jouaient. Des couples âgés discutaient sur les bancs. Jamila s’assit. Salim s’assit à côté d’elle, à une distance respectueuse.
+
+Ils parlèrent de solitude.
+
+Pas de façon solennelle. Juste comme on parle d’une chose familière.
+
+— Vivre seul, ce n’est pas la même chose que se sentir seul, dit-elle. J’ai appris la différence assez tôt.
+
+— Moi aussi. La première est un choix. La seconde est une absence.
+
+Elle tourna légèrement la tête vers lui.
+
+— Vous avez été marié ?
+
+La question était directe, mais posée sans curiosité invasive. Juste une porte ouverte.
+
+— Oui. Pendant sept ans. Ça s’est terminé il y a longtemps. Proprement. Sans drame. Juste… l’usure. Et vous ?
+
+— Non. Pas mariée. Une longue relation, il y a quelques années. Elle a duré jusqu’à ce que je comprenne que je disparaissais un peu dedans. Depuis, je fais attention.
+
+Il hocha la tête. Il n’y avait rien à ajouter. Le silence qui suivit n’était pas lourd. Il était plein de ce qu’ils venaient de se dire sans l’expliquer davantage.
+
+Plus tard, ils dînèrent dans un petit restaurant de la médina nouvelle. Rien de luxueux. Des tables serrées, une lumière chaude, des assiettes simples. Ils rirent plusieurs fois. Une fois, à cause d’un serveur maladroit qui renversa presque une carafe. Une autre fois, parce qu’elle imita parfaitement l’accent d’un client français qu’ils avaient croisé à la galerie. Salim découvrit qu’elle avait un humour sec, précis, qui ne cherchait jamais à blesser. Elle découvrit que, sous sa réserve, il savait être drôle d’une façon très discrète, presque confidentielle.
+
+En rentrant, dans la voiture, le silence était confortable. Lorsqu’il la déposa devant chez elle, elle resta un instant la main sur la portière.
+
+— J’aime bien parler avec vous, dit-elle simplement.
+
+— Moi aussi.
+
+Elle sourit, ferma la portière, et disparut dans l’immeuble.
+
+Les semaines suivantes, les rencontres s’espacèrent un peu, puis reprirent. Un café ici. Une promenade là. Un dîner improvisé un soir où ni l’un ni l’autre n’avait envie de rentrer tout de suite. Ils ne se voyaient pas assez pour que cela devienne une habitude contraignante. Juste assez pour que l’absence de l’autre commence à se remarquer.
+
+Un dimanche après-midi, ils allèrent jusqu’à Ain Diab. Le temps était doux. Ils marchèrent longtemps sur la plage, chaussures à la main. L’eau était froide. Jamila avança jusqu’aux chevilles, puis recula en riant.
+
+— Je n’ai jamais été très courageuse avec l’Atlantique.
+
+— Moi non plus. Je le regarde plus que je n’y entre.
+
+Ils s’assirent sur le sable. Elle parla de son enfance à Rabat, des étés chez sa grand-mère, de la façon dont les femmes de sa famille racontaient les histoires en cuisine. Lui parla de son père, artisan ébéniste, qui lui avait appris à respecter le bois avant de le travailler. Des silences de l’atelier. De la patience comme seule vertu vraiment utile.
+
+À un moment, leurs regards se croisèrent et restèrent un peu plus longtemps. Il y avait de l’attirance, oui. Claire, présente. Mais elle n’occupait pas toute la place. Ce qui les retenait l’un près de l’autre, c’était aussi le plaisir simple de continuer la conversation, de découvrir une nouvelle couche, une nouvelle nuance.
+
+Plus tard, en rentrant, elle lui dit :
+
+— Vous savez ce que j’apprécie chez vous ?
+
+Il tourna la tête, attentif.
+
+— Vous n’essayez pas de remplir les silences. La plupart des gens ont peur du vide. Vous, non.
+
+Il réfléchit un instant.
+
+— Parce que j’ai appris que les silences disent parfois plus juste que les mots. Et vous ? Qu’est-ce que vous appréciez… enfin, chez les gens en général ?
+
+Elle sourit de la maladresse volontaire de la question.
+
+— La cohérence. Les gens qui sont à peu près les mêmes le matin et le soir. Qui ne jouent pas trop de rôles.
+
+— C’est rare.
+
+— Oui. C’est pour ça que ça se remarque.
+
+Ils arrivèrent devant son immeuble. Cette fois, il descendit de voiture. Ils restèrent debout sur le trottoir, face à face. Le soir tombait. Les lampadaires s’allumaient un à un.
+
+— On se revoit bientôt ? demanda-t-il.
+
+— Oui. Dès que vous voulez.
+
+Il n’y eut pas de geste. Pas encore. Seulement ce regard partagé, cette reconnaissance tranquille que quelque chose était en train de se construire, lentement, sans précipitation, avec la même patience qu’on met à restaurer une maison ancienne.
+
+Lorsqu’il repartit, Salim se surprit à sourire seul dans la voiture. Ce n’était pas un sourire d’homme subjugué. C’était le sourire de quelqu’un qui se sentait simplement bien. Et qui savait, déjà, que ce bien-là avait une valeur particulière.
+
+De son côté, Jamila monta chez elle, posa son sac, et resta un long moment à la fenêtre. Elle pensait à la façon dont il écoutait. À la précision de ses silences. À cette profondeur discrète qu’elle commençait à percevoir sous la réserve. Elle ne savait pas encore où tout cela les mènerait. Elle savait seulement qu’elle avait envie de continuer à le découvrir.
+
+Et que, pour la première fois depuis longtemps, le fait de se sentir bien avec quelqu’un ne lui faisait pas peur.
+
+Pas encore.`;
+const PART6=`Ce fut un jeudi soir, presque par hasard.
+
+Salim avait proposé un dîner simple chez lui. Rien d’officiel. Juste deux plats qu’il savait réussir, une bouteille de vin blanc qu’il avait choisie sans trop réfléchir, et la terrasse de son appartement d’Anfa d’où l’on entendait la mer lorsqu’il n’y avait pas trop de vent. Jamila avait accepté immédiatement. Elle était arrivée avec un petit bouquet de roses blanches, encore fermées.
+
+— Elles ne sont pas tout à fait ouvertes, avait-elle dit en les lui tendant. J’ai préféré comme ça.
+
+Il avait souri, surpris par la coïncidence intérieure que ce geste provoquait en lui. Il n’en avait rien dit.
+
+Ils avaient mangé sur la terrasse, enveloppés dans des plaids parce que la soirée fraîchissait. Les assiettes vides restaient entre eux, oubliées. La conversation, d’abord légère, avait glissé peu à peu vers des territoires plus personnels, comme si le calme de l’endroit et la qualité de leur silence leur en donnaient enfin le droit.
+
+Jamila parla la première de ce qui l’avait marquée.
+
+— Dans ma dernière relation, dit-elle en regardant la mer plutôt que lui, j’ai appris quelque chose que je n’avais pas vu venir. Je croyais aimer. Et j’aimais, oui. Mais j’avais tellement peur de perdre l’autre que j’avais commencé à m’effacer. À dire oui trop vite. À taire ce qui me dérangeait. À devenir… pratique. Facile. Jusqu’au jour où je ne me reconnaissais plus.
+
+Salim ne répondit pas tout de suite. Il laissa la phrase exister entre eux. Puis il demanda, simplement :
+
+— Comment vous en êtes-vous rendu compte ?
+
+Elle tourna la tête vers lui. Dans la pénombre, ses yeux paraissaient plus sombres.
+
+— Un soir, il m’a dit que j’étais « parfaite ». Et j’ai ressenti une tristesse immense. Parce que je savais que ce n’était pas vrai. Que la femme parfaite qu’il voyait n’existait pas. Que je l’avais inventée pour ne pas le déranger. Le lendemain, j’ai commencé à partir. Lentement. Sans drame. Mais définitivement.
+
+Salim hocha la tête. Il n’essaya pas de la consoler. Il n’offrit pas de phrase toute faite.
+
+— C’est courageux, dit-il seulement. Beaucoup de gens restent dans cette version d’eux-mêmes parce que c’est plus simple.
+
+— Et vous ? demanda-t-elle après un silence. Votre mariage… vous en parlez peu.
+
+Il prit le temps de chercher ses mots. La mer, en bas, faisait un bruit régulier, presque apaisant.
+
+— On s’est aimés vraiment. Au début. Puis on a cessé de se regarder. On est devenus efficaces. On gérait la maison, les amis, les vacances. Mais on ne se voyait plus. Un jour, on s’est assis dans le salon et on a constaté que tout était en ordre… sauf nous. Pas de trahison. Pas de scandale. Juste deux personnes qui s’étaient perdues de vue sans s’en apercevoir. On a choisi de s’arrêter avant de s’en vouloir.
+
+Jamila resta silencieuse un long moment. Puis elle dit, très bas :
+
+— C’est peut-être plus douloureux, ce genre de fin. Parce qu’il n’y a personne à blâmer.
+
+— Oui. On ne peut s’en prendre qu’à sa propre inattention.
+
+Ils se turent. Le silence qui s’installa alors n’était plus celui, confortable, des semaines précédentes. Il était plus dense. Plus chargé. Il contenait ce qu’ils venaient de se confier, et le respect mutuel avec lequel ils l’avaient reçu.
+
+Au bout d’un moment, Jamila frissonna légèrement. Salim se leva, prit le plaid qui était resté sur le dossier de sa chaise et le lui passa autour des épaules. Ses doigts effleurèrent le tissu près de sa nuque. Le geste dura une seconde de plus qu’il n’était nécessaire. Ni l’un ni l’autre ne le commenta.
+
+— Merci, murmura-t-elle.
+
+Ils rentrèrent à l’intérieur. La lumière du salon était douce. Jamila s’assit sur le canapé, les jambes repliées sous elle. Salim s’installa à l’autre extrémité, assez près pour que leurs genoux puissent se toucher s’ils le voulaient, assez loin pour que le choix reste possible.
+
+Ils parlèrent encore. De ce qu’ils protégeaient, maintenant. De ce qu’ils n’étaient plus prêts à sacrifier. Elle dit qu’elle avait peur de disparaître à nouveau. Il dit qu’il avait peur de ne plus oser s’attacher vraiment, par trop de prudence. Ces aveux n’avaient rien de théâtral. Ils étaient posés là, entre eux, comme des objets fragiles qu’on examine à deux.
+
+À un moment, leurs mains se trouvèrent sur le dossier du canapé. Elles se frôlèrent. Restèrent proches. Puis, presque naturellement, ses doigts glissèrent contre les siens. Pas une étreinte. Juste un contact léger, permanent, qui disait : je suis là, et j’entends.
+
+Jamila regarda leurs mains un instant.
+
+— C’est étrange, dit-elle. Je me sens en sécurité avec vous. Et en même temps… un peu exposée.
+
+— Moi aussi, répondit-il. Les deux en même temps.
+
+Elle sourit, un sourire petit et vrai.
+
+— Alors on est deux.
+
+Plus tard, lorsqu’il la reconduisit, ils restèrent longtemps debout devant la porte de son immeuble. La nuit était douce. Une voiture passa au loin. Quelque part, un chien aboya une fois, puis se tut.
+
+— Merci pour ce soir, dit-elle. Pour… l’écoute. C’est rare.
+
+— Merci de m’avoir fait confiance.
+
+Elle le regarda. Puis, très lentement, elle se rapprocha et posa sa tête contre son épaule. Le geste était simple, presque enfantin. Il dura quelques secondes. Assez pour que Salim sente le parfum de ses cheveux et la chaleur discrète de son front. Assez pour qu’elle entende les battements réguliers de son cœur sous la chemise.
+
+Lorsqu’elle se redressa, leurs visages étaient proches. Ni l’un ni l’autre n’avança davantage. Ce n’était pas encore le moment. Mais quelque chose avait basculé. Une porte, jusque-là seulement entrouverte, s’était ouverte un peu plus grand.
+
+— On se parle demain ? demanda-t-il.
+
+— Oui. Demain.
+
+Elle monta. Il attendit que la lumière s’allume à sa fenêtre avant de regagner sa voiture. En conduisant, il pensait aux roses blanches qu’elle avait apportées. Elles étaient encore fermées. Mais il savait, maintenant, qu’elles s’ouvriraient. Lentement. À leur rythme. Sans qu’on ait besoin de forcer les pétales.
+
+De son côté, Jamila, une fois seule, s’assit au bord de son lit. Elle sentait encore le contact de son épaule contre la sienne. La solidité tranquille de ce silence partagé. Pour la première fois depuis longtemps, elle n’avait pas eu peur de montrer une partie de ce qu’elle protégeait d’habitude. Et lui n’avait pas essayé de la réparer. Il avait simplement écouté. Et c’était cela, paradoxalement, qui l’avait le plus touchée.
+
+Elle se coucha sans allumer la lumière. Derrière ses paupières closes, une image revenait : deux mains qui se frôlent sur un dossier de canapé, et qui choisissent de rester proches.
+
+Quelque part, très lentement, les portes de l’intimité s’ouvraient. Non pas d’un coup, dans un grand fracas émotionnel. Mais avec la discrétion des choses vraies. Une confidence après l’autre. Un silence après l’autre. Un geste après l’autre.
+
+Et la rose, encore à moitié fermée, commençait à sentir que l’air autour d’elle était devenu plus doux.`;
+addCh(3,'Le souvenir qui demeure',PART3);const PART4=`Le samedi matin, Salim resta longtemps devant le miroir de la salle de bains sans vraiment se voir. Il avait choisi une chemise bleu nuit, plus soignée que celles qu’il portait d’habitude sur les chantiers. Il se demanda pourquoi. Puis il se répondit que c’était simplement pour l’exposition. Les galeries avaient leurs codes. Rien d’autre.
+
+Le carton d’invitation était posé sur la console de l’entrée depuis trois jours. Il l’avait déplacé plusieurs fois, rangé dans un tiroir, ressorti. Chaque fois, le nom de Jamila Bennani le regardait avec la même simplicité tranquille. Il n’avait pas cherché plus loin. Pas de profil sur les réseaux. Pas de numéro. Seulement ce carton, et le souvenir d’une voix dans un train.
+
+À onze heures, il prit sa voiture. La circulation vers Gauthier était fluide. Il trouva une place à deux rues de la galerie Al-Nur. En descendant, il sentit une légère tension dans la nuque. Il la chassa d’un mouvement d’épaules. Ce n’était qu’une exposition. Il était libre d’entrer et de ressortir quand il le voudrait.
+
+La galerie occupait un ancien local commercial rénové avec goût. Murs blancs, lumière zénithale, sol en béton ciré. Dès l’entrée, les photographies s’imposaient sans agressivité. Grandes tirages, formats moyens, quelques très petits clichés regroupés comme des notes prises à la hâte. Salim avança lentement. Il reconnut immédiatement le regard. Les mêmes mains d’artisans. Les mêmes seuils usés. Une porte de cèdre dont le bois avait été poli par des générations de paumes. Une lumière qui savait attendre.
+
+Il s’arrêta longtemps devant une image de médersa. Les stucs y apparaissaient à moitié restaurés, encore fragiles, encore poussiéreux. On devinait le travail en cours. Rien de figé. Rien de parfait. Exactement ce dont ils avaient parlé dans le train.
+
+Une voix s’éleva derrière lui.
+
+— Vous êtes venu.
+
+Il se retourna.
+
+Jamila se tenait à trois mètres, une tasse de thé à la main. Elle portait un pantalon noir et une blouse couleur sable. Les cheveux cette fois dénoués, retenus seulement par une pince discrète. Elle n’avait pas l’air surprise. Seulement attentive, comme si elle avait envisagé la possibilité sans y croire tout à fait.
+
+Salim sentit le sourire lui venir avant d’avoir décidé de le laisser apparaître.
+
+— Le carton était sur ma table depuis plusieurs jours. Mon associé l’avait laissé. Votre nom était dessus.
+
+Elle pencha légèrement la tête.
+
+— Et vous avez décidé de vérifier si les images ressemblaient à la personne du train.
+
+— Quelque chose comme ça.
+
+Ils restèrent un instant face à face, dans le flux discret des visiteurs. Autour d’eux, des conversations basses, le bruit de pas sur le béton, le cliquetis d’une tasse reposée sur une soucoupe. Rien n’était spectaculaire. Et pourtant, l’air avait changé de densité.
+
+— Vous voulez que je vous fasse le tour ? demanda-t-elle.
+
+— Oui. Si vous avez le temps.
+
+— J’ai une prise de parole dans une heure. D’ici là, je suis libre.
+
+Ils avancèrent ensemble. Elle ne parlait pas beaucoup. Elle laissait les images s’imposer, puis ajoutait parfois une précision. Celle-ci avait été prise juste après une averse. Celle-là, au moment où l’artisan s’était arrêté pour boire. Salim écoutait. Il posait peu de questions. Il préférait regarder la façon dont elle regardait son propre travail : sans vanité, avec une sorte de tendresse critique.
+
+Devant la photographie de la médersa, il s’arrêta plus longtemps.
+
+— C’est celle de Meknès ?
+
+— Oui. Deux jours après notre conversation dans le train. J’y ai pensé, en la prenant. À ce que vous aviez dit sur les maisons qui ont besoin de silence.
+
+Il tourna légèrement la tête vers elle.
+
+— Vous y avez pensé ?
+
+Elle ne détourna pas les yeux.
+
+— Oui. C’était une phrase juste. Elles restent, les phrases justes.
+
+Un silence s’installa. Pas gênant. Simplement plein. Salim sentit que quelque chose d’important venait d’être dit, sans avoir été nommé.
+
+Ils continuèrent. Elle lui montra une série plus personnelle : des fenêtres de maisons abandonnées, prises toujours à la même heure, lorsque la lumière entrait de biais. Il y avait dans ces images une mélancolie retenue, presque pudique. Salim les regarda longtemps.
+
+— Vous aimez les choses qui restent un peu en suspens, dit-il.
+
+Elle sourit.
+
+— Oui. Les choses qui n’ont pas encore décidé ce qu’elles allaient devenir.
+
+Il reconnut l’écho de leurs paroles du train. Cette fois, ni l’un ni l’autre n’en fit la remarque. C’était inutile.
+
+Au bout d’un moment, elle le conduisit vers un petit patio intérieur où l’on avait installé quelques chaises et une table de rafraîchissements. Ils prirent chacun un thé à la menthe. S’assirent. La conversation, d’abord liée aux images, s’élargit naturellement.
+
+Elle lui demanda des nouvelles du riad. Il raconta les avancées, les résistances du client, la patience qu’il fallait aux artisans. Elle écoutait avec cette attention qu’il avait déjà remarquée, celle qui ne cherchait pas à remplir les silences. De son côté, il apprit qu’elle travaillait actuellement sur un livre. Un ouvrage mêlant photographies et textes courts. Rien de grandiloquent. Juste des fragments de vies ordinaires dans des lieux extraordinaires par leur simplicité.
+
+— Et vous écrivez toujours dans les trains ? demanda-t-il.
+
+— Dès que j’en ai l’occasion. Les trains restent les meilleurs endroits pour les pensées qui n’ont pas encore de forme.
+
+Il sourit.
+
+— Je n’ai pas rouvert mon livre depuis ce jour-là. Il est toujours à la même page.
+
+Elle le regarda avec une lueur d’amusement.
+
+— Alors on peut dire que j’ai interrompu quelque chose.
+
+— Ou commencé autre chose.
+
+Les mots étaient sortis plus vite qu’il ne l’avait voulu. Il les laissa exister. Elle ne les commenta pas. Elle se contenta de baisser les yeux vers sa tasse, un léger sourire aux lèvres.
+
+Ils parlèrent encore. De Casablanca. Des quartiers qu’ils aimaient. Elle préférait les rues un peu chaotiques de Maârif, le bruit qui empêchait de trop penser. Lui aimait le calme relatif d’Anfa, la proximité de la mer le soir. Différences simples, sans importance, et pourtant révélatrices. Elle avait une façon plus vive de parler lorsqu’elle s’animait. Lui restait posé, mais ses remarques portaient parfois une ironie discrète qu’elle saisissait immédiatement. Une forme de complicité se dessinait, encore fragile, comme une esquisse.
+
+À un moment, un homme s’approcha. Le galeriste. Il rappela à Jamila que la rencontre avec le public allait bientôt commencer. Elle se leva. Salim se leva aussi.
+
+— Vous restez ? demanda-t-elle.
+
+— Oui. Si cela ne vous dérange pas.
+
+— Au contraire.
+
+Il la regarda s’éloigner vers le fond de la galerie où l’on avait disposé quelques chaises. Elle s’installa, attendit que le petit public se calme, puis commença à parler. Sa voix était la même que dans le train : basse, claire, précise. Elle ne cherchait pas à séduire. Elle expliquait. Elle racontait le temps passé à attendre la bonne lumière. La nécessité de ne pas forcer les images. La patience comme seule méthode honnête.
+
+Salim l’écoutait depuis le fond de la salle. Il ne regardait presque plus les photographies. Il la regardait elle. La façon dont elle inclinait légèrement la tête lorsqu’elle cherchait un mot. Le sourire bref qui apparaissait quand quelqu’un posait une question juste. La retenue qui n’était pas de la timidité, mais une forme de respect pour ce qu’elle montrait.
+
+Lorsqu’elle eut terminé, plusieurs personnes s’approchèrent pour discuter. Il attendit. Il n’était pas pressé. Au bout d’un moment, elle se libéra et revint vers lui.
+
+— Merci d’être resté.
+
+— C’était intéressant. Vraiment.
+
+Ils se dirigèrent vers la sortie. Dehors, la lumière de début d’après-midi était vive. Ils restèrent un instant sur le trottoir, comme des gens qui n’ont pas encore décidé de se séparer.
+
+— Je suis contente que vous soyez venu, dit-elle finalement.
+
+— Moi aussi.
+
+Un silence. Puis il ajouta, avec une prudence qu’il n’essayait même plus de dissimuler :
+
+— Est-ce que ce serait possible de se revoir ? Autrement. Pas seulement devant des photographies.
+
+Elle le regarda. Dans ses yeux, il y avait de la surprise, oui, mais aussi quelque chose qui ressemblait à du soulagement.
+
+— Oui. Ce serait possible.
+
+Il sortit son téléphone. Elle lui donna son numéro. Il lui donna le sien. Le geste était simple, presque banal. Et pourtant, lorsque leurs doigts se frôlèrent en échangeant l’appareil, Salim sentit que quelque chose venait de basculer très légèrement. Une porte, jusque-là seulement entrouverte, s’était ouverte un peu plus.
+
+— Je vous écris ces jours-ci, dit-il.
+
+— D’accord.
+
+Elle sourit. Un sourire vrai, cette fois sans réserve.
+
+— À bientôt, Salim.
+
+— À bientôt, Jamila.
+
+Ils se quittèrent là, sur le trottoir de Gauthier, sous la lumière de Casablanca. Chacun reprit sa direction. Mais le fil qui les reliait, jusque-là invisible et fragile, avait maintenant une existence concrète. Un numéro. Une promesse discrète. Et la certitude partagée que cette seconde rencontre n’était pas un accident.
+
+Quelque part, très lentement, une rose commençait à sentir la chaleur d’un soleil plus proche.`;
+addCh(4,'La seconde rencontre',PART4);addCh(5,'L’art de se connaître',PART5);addCh(6,'Les portes de l’intimité',PART6);
+const PART7=`Le lendemain, ils s’écrivirent tôt.
+
+Rien d’extraordinaire. Un message de Salim pour savoir si elle avait bien dormi. Une réponse de Jamila, un peu plus longue que d’habitude, qui parlait de la lumière sur la terrasse la veille et du calme qu’elle avait emporté avec elle. Puis un silence de quelques heures. Puis un autre message. Puis encore un. Comme si ni l’un ni l’autre n’osait tout à fait refermer la conversation.
+
+Ils se revirent trois jours plus tard.
+
+Cette fois, c’était elle qui avait proposé. Une fin d’après-midi dans un jardin public un peu à l’écart, là où les enfants jouent moins fort et où les bancs font face à de grands ficus. Elle arriva la première. Lorsqu’elle le vit s’approcher, quelque chose changea en elle. Ce n’était plus seulement le plaisir de le retrouver. C’était une conscience plus aiguë de sa présence. La façon dont il marchait, un peu lentement, les épaules droites. La façon dont sa chemise épousait la ligne de son torse sans la souligner. La façon dont son regard la chercha immédiatement parmi les gens.
+
+Elle se leva. Ils s’embrassèrent sur les joues, comme toujours. Mais cette fois, le contact dura une fraction de seconde de plus. Elle sentit l’odeur discrète de sa peau, un mélange de savon et de quelque chose de plus personnel, plus chaud. Lorsqu’ils s’écartèrent, elle eut besoin d’un instant pour retrouver son souffle.
+
+Ils s’assirent. Parlèrent. Du riad. Du livre. D’un film qu’elle avait vu. Mais sous les mots, autre chose circulait. Salim la regardait davantage. Non pas de façon insistante. Juste… pleinement. Il remarquait le mouvement de sa bouche lorsqu’elle formait certaines phrases. La façon dont une mèche échappait toujours à sa pince et venait frôler sa joue. La courbe de sa nuque lorsqu’elle penchait la tête pour rire.
+
+À un moment, elle croisa ses jambes. Le tissu de sa jupe glissa légèrement. Il détourna les yeux, puis les ramena. Elle le vit faire. Une chaleur monta le long de sa gorge. Elle ne dit rien. Mais elle ne rajusta pas immédiatement le tissu.
+
+Le désir, comprit-elle ce jour-là, n’arrivait pas comme une vague brutale. Il s’installait par couches successives. Une attention plus vive. Une conscience soudaine du corps de l’autre. Le souhait, presque involontaire, de prolonger chaque moment d’un peu plus longtemps.
+
+Ils marchèrent ensuite. Leurs bras se frôlaient par instants. Une fois, ses doigts touchèrent le dos de sa main. Ni l’un ni l’autre ne retira la sienne tout de suite. Lorsqu’ils se séparèrent, devant sa voiture, il y eut un silence chargé. Leurs regards se tinrent. Elle vit dans les siens quelque chose qu’elle n’avait pas encore vu aussi clairement : non seulement de la tendresse, mais une attirance assumée, contenue, presque respectueuse d’elle-même.
+
+— Je pense à vous souvent, ces derniers jours, dit-il simplement.
+
+La phrase n’était pas une déclaration. C’était un constat. Posé là, entre eux, avec la même honnêteté que leurs confidences de l’autre soir.
+
+Elle répondit, la voix un peu plus basse :
+
+— Moi aussi.
+
+Ils restèrent encore une minute. Puis elle monta dans sa voiture. En démarrant, elle jeta un dernier regard dans le rétroviseur. Il était toujours là, sur le trottoir, les mains dans les poches, la suivant des yeux.
+
+Chez elle, le soir, elle s’attarda sous la douche plus longtemps que d’habitude. L’eau chaude sur sa peau lui rappela, sans qu’elle l’ait voulu, la chaleur de son épaule contre la sienne. Elle ferma les yeux. Le désir n’était plus seulement une idée. Il avait maintenant une texture. Une présence. Et, chose étrange, il ne lui faisait pas peur. Parce qu’il grandissait dans un terrain déjà préparé par la confiance.
+
+De son côté, Salim rentra chez lui dans un état de lucidité particulière. Il voyait maintenant clairement ce qui se passait. Ce n’était plus seulement une complicité intellectuelle. Ce n’était plus seulement une tendresse née de confidences partagées. C’était aussi le désir. Franc. Adulte. Et d’autant plus fort qu’il ne cherchait pas à se précipiter.
+
+Il se rappela le moment où elle avait posé sa tête contre son épaule. Le poids léger de son front. Le parfum de ses cheveux. La façon dont son corps s’était abandonné, juste un instant, à cette proximité. Depuis, chaque souvenir de ce geste s’était chargé d’une intensité nouvelle. Il pensait à sa bouche lorsqu’elle souriait. À la ligne de ses clavicules sous la blouse. À la façon dont sa voix s’enrouait légèrement lorsqu’elle parlait de choses importantes.
+
+Le désir, se dit-il, n’était pas seulement l’envie de toucher. C’était aussi l’envie de continuer à la regarder devenir elle-même en sa présence. De la voir rire. De la voir se taire. De la voir exister, simplement, à côté de lui.
+
+Ils se revirent une semaine plus tard.
+
+Cette fois, c’était le soir. Un restaurant discret, presque vide en semaine. La lumière était basse. Ils étaient assis l’un en face de l’autre, assez proches pour que leurs genoux se touchent parfois sous la table. Chaque contact provoquait en eux une petite décharge intérieure, immédiatement maîtrisée, mais jamais ignorée.
+
+Au dessert, elle posa sa main sur la table, paume vers le haut, presque sans y penser. Il y posa la sienne. Leurs doigts s’entrelacèrent lentement. Ni l’un ni l’autre ne parla pendant un long moment. Ils se contentèrent de ce contact, de sa chaleur, de sa simplicité troublante.
+
+— Je ne sais pas exactement où nous allons, murmura-t-elle finalement. Mais j’aime ce qui se passe.
+
+— Moi aussi, répondit-il. Et je n’ai pas envie de le précipiter.
+
+Elle serra légèrement ses doigts.
+
+— Tant mieux. Moi non plus.
+
+Plus tard, lorsqu’il la ramena, ils restèrent longtemps dans la voiture, garée devant son immeuble. La nuit était claire. Une musique lointaine venait d’un café encore ouvert. Il tourna la tête vers elle. Elle le regardait déjà. Dans l’obscurité relative de l’habitacle, leurs visages n’étaient plus qu’à quelques centimètres.
+
+Il y eut un instant où tout aurait pu basculer. Un mouvement de plus. Un penchant de la tête. Un souffle. Mais ni l’un ni l’autre ne le fit. Non par peur. Par respect pour ce qui était en train de naître. Par désir, précisément, de ne pas brûler les étapes que le temps leur offrait encore.
+
+Elle fut celle qui parla.
+
+— Un jour, dit-elle tout bas, on franchira cette distance. Mais pas ce soir. Pas encore.
+
+Il sourit dans la pénombre. Un sourire qu’elle devina plus qu’elle ne le vit.
+
+— D’accord. Pas encore.
+
+Elle posa sa main contre sa joue. Le geste fut tendre, presque exploratoire. Son pouce effleura la ligne de sa mâchoire. Puis elle se retira, ouvrit la portière, et descendit.
+
+Avant de fermer, elle se pencha une dernière fois.
+
+— Bonne nuit, Salim.
+
+La façon dont elle prononça son prénom ce soir-là resta longtemps en lui. Comme une caresse. Comme une promesse non formulée.
+
+Il attendit qu’elle ait disparu dans l’immeuble avant de démarrer. Sur le chemin du retour, le désir était là, clair, présent, presque joyeux. Il n’avait plus rien d’abstrait. Il avait le visage de Jamila. Sa voix. Sa main dans la sienne. Et cette certitude nouvelle : ce qu’ils construisaient était assez solide pour supporter d’attendre encore un peu.
+
+La rose, quelque part, n’était plus tout à fait fermée. Un pétale, très lentement, avait commencé à s’écarter. Juste assez pour laisser passer un peu plus de lumière. Juste assez pour que le parfum, encore discret, commence à se deviner.`;
+addCh(7,'La naissance du désir',PART7);
+const PART8=`Les jours qui suivirent cette soirée dans la voiture eurent un goût différent.
+
+Au début, rien ne parut changé. Ils s’écrivirent comme d’habitude. Des messages simples, précis, parfois teintés d’une tendresse discrète. Mais sous la surface, quelque chose s’était déplacé. Le « pas encore » qu’ils avaient prononcé tous les deux résonnait encore. Il avait créé un espace. Et dans cet espace, les peurs, jusque-là silencieuses, commencèrent à prendre un peu plus de place.
+
+Salim fut le premier à ressentir le besoin de ralentir.
+
+Non pas parce qu’il désirait moins Jamila. Au contraire. C’était précisément l’intensité de ce désir qui l’inquiétait. Il avait quarante-cinq ans. Il savait ce que coûtait un attachement véritable. Il savait aussi combien il était facile, dans l’élan d’une émotion forte, de confondre l’élan avec la certitude. Alors il devint un peu plus prudent. Ses messages restèrent chaleureux, mais un peu plus espacés. Lorsqu’elle proposa de se voir le week-end suivant, il répondit qu’il devait retourner à Fès pour le chantier, ce qui était vrai, mais qu’il aurait pu peut-être décaler d’un jour. Il ne le fit pas.
+
+Jamila le sentit immédiatement.
+
+Elle qui avait appris, dans sa précédente relation, à détecter les micro-retraits, les silences qui s’allongent, les réponses qui tardent, reconnut le mouvement. Une vieille vigilance se réveilla en elle. Elle ne l’accusa de rien. Elle ne posa pas de question directe. Elle se contenta, à son tour, de prendre un peu de distance. Moins de messages. Des réponses plus brèves. Une invitation à dîner déclinée sous prétexte d’un travail urgent — prétexte réel, mais aussi protection.
+
+Pendant une semaine, ils se parlèrent moins.
+
+Le manque s’installa avec une précision presque cruelle.
+
+Salim, dans le patio du riad à Fès, se surprenait à vérifier son téléphone plus souvent qu’il ne l’aurait admis. Le soir, dans sa chambre d’hôtel, le silence lui pesait d’une façon nouvelle. Il repensait à sa main dans la sienne. À la façon dont elle avait dit son prénom. À ce moment, dans la voiture, où tout aurait pu basculer et où ils avaient choisi d’attendre. Il se demandait s’il n’avait pas, par trop de prudence, créé exactement ce qu’il redoutait : une distance.
+
+Jamila, de son côté, travaillait beaucoup. Elle passait de longues heures à trier des images, à écrire des légendes, à répondre à des mails. Mais le soir, seule dans son appartement de Maârif, elle sentait l’absence comme une présence. Elle se rappelait la chaleur de son épaule. La solidité de son silence lorsqu’elle lui avait parlé de sa peur de disparaître. Et elle se demandait si, une fois de plus, elle n’était pas en train de s’attacher à quelqu’un qui, au moment crucial, choisirait la sécurité de la retenue plutôt que le risque de l’élan.
+
+Un mardi soir, elle lui écrivit.
+
+« Est-ce que tout va bien ? »
+
+Le message resta sans réponse jusqu’au lendemain matin. Lorsqu’elle reçut enfin la sienne, elle était simple :
+
+« Oui. Pardon. Le chantier est compliqué en ce moment. Je rentre jeudi. On peut se parler ? »
+
+Elle mit plusieurs heures à répondre. Non par jeu. Parce qu’elle avait besoin de savoir si elle voulait encore s’exposer.
+
+« Oui. Vendredi soir, si tu veux. »
+
+Ils se retrouvèrent dans le même café de la Corniche où ils avaient pris leur premier vrai café. Le temps était gris. La mer, agitée. Jamila arriva avec cinq minutes de retard, ce qui était rare chez elle. Salim était déjà là. Lorsqu’elle s’assit, il y eut un instant de gêne inhabituelle entre eux.
+
+— Tu as l’air fatigué, dit-elle.
+
+— Le chantier. Et… autre chose.
+
+Elle attendit.
+
+Il posa ses mains à plat sur la table, les regarda un moment, puis releva les yeux.
+
+— Depuis l’autre soir, dans la voiture, je tourne en rond. Je désire être près de toi. Clairement. Et en même temps, j’ai peur d’aller trop vite. De mal interpréter. De te faire sentir… obligée. Ou, au contraire, de te perdre en freinant trop. Alors j’ai freiné. Et je crois que ça t’a blessée.
+
+Jamila resta silencieuse quelques secondes. Puis elle dit, avec une honnêteté qui lui coûta :
+
+— Oui. Ça m’a blessée. Parce que j’ai reconnu le mouvement. Celui où l’autre commence à s’éloigner juste au moment où ça devient important. Et j’ai fait ce que je sais faire : me protéger. En me retirant un peu aussi.
+
+Ils se regardèrent. Il n’y avait ni reproche ni drame dans leurs yeux. Seulement deux adultes qui tentaient de nommer ce qui s’était passé.
+
+— Je n’ai pas voulu m’éloigner, dit Salim. J’ai voulu… être sûr de ne pas te bousculer.
+
+— Et moi, j’ai eu peur que ta prudence soit une façon de ne pas vraiment choisir.
+
+Un silence. Puis elle ajouta, plus bas :
+
+— J’ai aussi eu peur de moi. De mon propre désir. De ce que ça implique de laisser quelqu’un compter autant.
+
+Salim tendit la main sur la table, paume ouverte. Elle la regarda un instant, puis y posa la sienne. Le contact fut immédiat, familier, et en même temps chargé de tout ce qu’ils venaient de se dire.
+
+— Je ne veux pas que tu disparaisses, dit-il. Ni que tu aies l’impression de devoir le faire. Et je ne veux pas non plus me protéger au point de te perdre.
+
+— Alors il va falloir qu’on apprenne à parler plus tôt. Avant que la distance s’installe.
+
+— Oui.
+
+Ils restèrent ainsi un long moment, mains jointes, regardant la mer grise derrière la vitre. Le manque des jours précédents avait agi comme un révélateur. Il leur avait montré, avec une clarté presque douloureuse, à quel point l’autre était déjà devenu nécessaire. Non pas d’une nécessité étouffante. D’une nécessité douce, et pourtant réelle.
+
+En se quittant, ce soir-là, ils ne s’embrassèrent toujours pas sur la bouche. Mais leurs corps se rapprochèrent davantage. Elle resta plus longtemps contre lui. Il garda sa main dans le bas de son dos une seconde de plus. Et lorsqu’ils se séparèrent, il y avait dans leurs yeux une forme nouvelle de détermination.
+
+La distance avait fait son œuvre. Elle ne les avait pas détruits. Elle les avait obligés à regarder en face ce qu’ils étaient en train de construire. Et à choisir, une fois de plus, de continuer.
+
+La rose, un instant menacée par un vent froid, avait tenu. Ses pétales, encore partiellement fermés, s’étaient seulement resserrés un peu. Le temps d’une hésitation. Le temps d’un doute. Puis, lentement, ils recommencèrent à s’ouvrir. Parce que, cette fois, les racines étaient un peu plus profondes. Et parce que deux personnes avaient décidé, ensemble, de ne pas laisser la peur décider à leur place.`;
+addCh(8,'Le temps des hésitations',PART8);
+const PART9=`Le vendredi suivant leur conversation sur la Corniche, ils se revirent chez elle.
+
+Jamila avait proposé. Non pas un dîner élaboré. Juste un moment simple, chez elle, dans l’appartement de Maârif qu’elle n’avait encore jamais ouvert à Salim. Lorsqu’il arriva, elle avait allumé seulement deux lampes. La lumière était basse, chaude. Sur la table basse, une théière et deux verres. Pas de roses, cette fois. Seulement l’espace qu’elle avait choisi de partager.
+
+Ils s’assirent l’un près de l’autre sur le canapé. Pendant un long moment, ils ne parlèrent presque pas. Le silence, entre eux, avait changé de nature depuis leur malentendu. Il n’était plus seulement confortable. Il était devenu un lieu où l’on pouvait enfin dire les choses difficiles.
+
+Ce fut Salim qui reprit le fil.
+
+— L’autre jour, au café, tu as dit que tu avais eu peur que ma prudence soit une façon de ne pas vraiment choisir. Tu avais raison de le dire. Parce que, pendant quelques jours, j’ai hésité. Pas sur ce que je ressentais. Sur ce que je méritais d’en faire.
+
+Jamila le regarda sans l’interrompre.
+
+— J’ai passé beaucoup d’années à croire que la retenue était une forme de respect, continua-t-il. Et parfois, c’est vrai. Mais j’ai aussi appris, avec toi, que trop de retenue peut ressembler à un retrait. Et que le retrait, même bien intentionné, blesse.
+
+Elle hocha lentement la tête.
+
+— Et moi, j’ai réagi comme je savais le faire. En me protégeant avant même d’avoir vérifié. Parce que j’ai encore en moi cette peur de m’effacer. De devenir trop disponible. Trop… prise.
+
+Elle marqua une pause, chercha ses mots avec soin.
+
+— Mais avec toi, cette peur est différente. Elle n’est plus seulement une défense automatique. Elle est devenue une question que je me pose vraiment : est-ce que je peux m’ouvrir sans me perdre ? Est-ce que je peux désirer sans disparaître ?
+
+Salim posa sa main sur la sienne. Le geste était simple, mais il portait tout le poids de ce qu’ils venaient de traverser.
+
+— Je ne te demande pas de disparaître, dit-il. Je te demande seulement de rester. Telle que tu es. Avec tes silences, tes distances, tes élans. Et je m’engage à rester aussi. Même quand j’aurai peur.
+
+Elle le regarda longtemps. Dans ses yeux, quelque chose se dénoua. Une tension ancienne, une vigilance qui n’avait plus tout à fait sa raison d’être.
+
+— Alors on essaie, murmura-t-elle. Vraiment. Sans se protéger l’un de l’autre.
+
+— Oui.
+
+Ils restèrent ainsi, mains jointes, le temps que les mots s’installent vraiment. Puis Jamila se rapprocha. Lentement. Elle posa sa tête contre son épaule, comme elle l’avait fait une fois déjà, mais cette fois le geste n’avait plus rien d’hésitant. Son front trouva le creux de son cou. Son souffle se posa contre sa peau.
+
+Salim ferma les yeux. Une main se leva et vint se poser dans ses cheveux, avec une lenteur presque cérémonielle. Il n’y avait plus de calcul. Plus de mesure excessive. Seulement la certitude tranquille qu’ils avaient franchi quelque chose ensemble.
+
+Au bout d’un long moment, elle se redressa légèrement. Leurs visages n’étaient plus qu’à quelques centimètres. Cette fois, ni l’un ni l’autre ne détourna le regard. Ni l’un ni l’autre n’attendit que l’autre décide seul.
+
+Ce fut un mouvement commun, presque imperceptible. Leurs lèvres se rencontrèrent.
+
+Le baiser fut d’abord doux. Exploratoire. Une question posée en silence, et une réponse immédiatement donnée. Puis il s’approfondit, lentement, avec cette même patience qui avait marqué chacun de leurs gestes depuis le début. Il y avait du désir, oui. Clair, présent, assumé. Mais il y avait aussi de la tendresse. Et surtout, cette qualité rare d’un consentement qui n’avait pas besoin d’être formulé parce qu’il avait été longuement préparé.
+
+Lorsqu’ils se séparèrent, leurs fronts restèrent appuyés l’un contre l’autre. Leurs souffles se mêlaient.
+
+— Voilà, murmura Jamila. On a franchi.
+
+— Oui, répondit Salim. Et on est toujours là.
+
+Elle sourit contre sa bouche.
+
+— Toujours là.
+
+Ils restèrent longtemps ainsi, se redisant sans mots ce qu’ils venaient enfin d’oser. Plus tard, ils parlèrent encore. De ce qu’ils voulaient. De ce qu’ils ne voulaient plus. De la façon dont ils allaient apprendre, ensemble, à ne plus laisser la peur décider à leur place.
+
+Lorsque Salim partit, bien plus tard dans la nuit, ils s’embrassèrent encore une fois sur le pas de la porte. Un baiser plus bref, mais tout aussi conscient. Puis elle referma derrière lui.
+
+Seule, Jamila s’adossa un instant contre la porte. Elle sentait encore le goût de ses lèvres. La chaleur de ses mains. Et, plus profondément, cette sensation nouvelle d’avoir traversé une défense sans s’être trahie.
+
+De son côté, Salim marcha un moment dans la rue avant de regagner sa voiture. La nuit casablancaise était douce. Il pensait aux roses qu’elle lui avait apportées, des semaines plus tôt. Elles s’étaient ouvertes, depuis. Lentement. Pétale après pétale. Exactement comme eux.
+
+Au-delà des défenses, il y avait maintenant un espace plus vaste. Un espace où le désir pouvait enfin exister sans se cacher. Où la confiance n’était plus seulement une idée, mais une pratique. Et où deux êtres, après avoir douté, s’étaient choisis une fois de plus.
+
+La rose, cette nuit-là, s’ouvrit un peu plus. Non pas dans un éclat soudain. Mais avec la certitude tranquille de ce qui a traversé l’ombre et choisi, malgré tout, la lumière.`;
+addCh(9,'Au-delà des défenses',PART9);
+const PART10=`Les semaines qui suivirent le premier baiser eurent la douceur des choses enfin nommées.
+
+Ils ne se virent pas tous les jours. Leurs vies gardaient leurs rythmes propres : le chantier de Fès pour lui, les reportages et le livre pour elle. Mais chaque rencontre portait désormais une qualité nouvelle. Plus de retenue excessive. Plus de calculs secrets. Seulement la joie simple, presque étonnée, d’être enfin autorisés à se désirer sans détour.
+
+Un soir, chez lui, ils cuisinèrent ensemble. Rien de compliqué. Des légumes, du poisson, du pain. Elle riait facilement. Lui la regardait avec une attention qui n’avait plus rien de dissimulé. Lorsqu’elle passa près de lui pour atteindre une assiette, il la retint par la taille. Elle se laissa faire. Leurs bouches se trouvèrent sans hésitation. Le baiser fut plus profond que le premier. Plus sûr. Lorsqu’ils s’écartèrent, elle avait les joues légèrement colorées.
+
+— Je t’aime bien comme ça, dit-elle. Quand tu n’essaies plus de te retenir.
+
+— Je t’aime bien comme ça aussi, répondit-il. Quand tu restes.
+
+Le mot « aimer » n’avait pas encore toute sa gravité. Mais il était là, en chemin, et ni l’un ni l’autre n’en eut peur.
+
+Leur intimité progresse avec la même lenteur attentive qui avait marqué le reste. Ils s’embrassaient longtemps. Leurs mains apprenaient le corps de l’autre. Un soir, chez elle, ils restèrent allongés l’un contre l’autre sur le canapé, habillés encore, mais si proches que la chaleur de leurs peaux se confondait à travers les tissus. Elle traça du doigt la ligne de sa mâchoire. Il enfouit son visage dans son cou. Le désir était là, vibrant, évident. Mais ils prirent encore le temps. Non par peur. Par plaisir de savourer chaque seuil avant de le franchir.
+
+Ce fut une nuit de fin novembre qu’ils choisirent enfin d’aller plus loin.
+
+Il n’y eut pas de grand discours. Seulement un regard. Une question silencieuse. Une réponse tout aussi claire. Dans sa chambre, la lumière était tamisée. Ils se déshabillèrent sans précipitation, en se regardant. Il y avait de la pudeur, oui, mais une pudeur joyeuse, presque reconnaissante. Lorsqu’ils se retrouvèrent peau contre peau, Jamila eut un petit souffle, comme une surprise heureuse. Salim l’embrassa longuement, le front, les tempes, la bouche, comme s’il voulait apprendre par cœur la carte de son visage.
+
+Leur étreinte fut tendre et sensuelle à la fois. Rien de mécanique. Rien de performatif. Seulement deux corps qui avaient appris à se faire confiance et qui pouvaient enfin s’abandonner à ce qu’ils désiraient depuis des semaines. Elle le guida parfois. Il la suivit. Ils rirent une fois, tout bas, d’un malentendu charmant. Puis le rire se perdit dans un autre baiser.
+
+Après, ils restèrent longtemps enlacés. La respiration encore un peu rapide. Les doigts entrelacés. Dehors, Casablanca continuait sa nuit. À l’intérieur, tout était calme.
+
+— Je ne savais pas que ça pouvait être… comme ça, murmura-t-elle contre son épaule.
+
+— Comme quoi ?
+
+— Aussi simple. Et aussi profond en même temps.
+
+Il pressa ses lèvres contre ses cheveux.
+
+— Moi non plus.
+
+Dans les jours qui suivirent, quelque chose s’était définitivement ouvert. Ils se disaient plus clairement ce qu’ils ressentaient. Pas encore les grands mots définitifs, mais des phrases justes, posées avec soin. « J’ai pensé à toi toute la journée. » « Ta voix me manque quand tu es à Fès. » « Je suis heureuse, là, maintenant. »
+
+Un après-midi, alors qu’ils marchaient le long de la mer, Jamila s’arrêta et le regarda.
+
+— Tu sais que je suis en train de t’aimer, n’est-ce pas ?
+
+La phrase était simple. Presque factuelle. Et pourtant elle fit battre le cœur de Salim avec une force qu’il n’avait pas ressentie depuis longtemps.
+
+— Oui, répondit-il. Et tu sais que c’est réciproque.
+
+Elle sourit. Un sourire large, libre, sans défense.
+
+— Oui. Je sais.
+
+Ils reprirent leur marche. Leurs mains se trouvèrent. Cette fois, il n’y avait plus de « pas encore ». Il n’y avait plus de distance à mesurer. Seulement deux êtres qui avaient pris le temps d’apprendre à se connaître, à se craindre, à se choisir, et qui pouvaient enfin laisser la rose s’ouvrir tout à fait.
+
+Elle s’ouvrit. Non pas dans un éclat brutal. Mais dans la plénitude tranquille de ce qui a été patient. Ses pétales, un à un, s’étaient écartés. Le cœur de la fleur était maintenant visible. Et sa beauté venait autant du temps qu’elle avait mis à s’épanouir que de l’éclat présent de sa floraison.`;
+addCh(10,'La rose s’ouvre',PART10);
+const PART11=`L’hiver s’installa sur Casablanca avec une douceur trompeuse. Les journées restaient claires, mais les soirs descendaient plus tôt. Dans cet entre-deux, la relation de Salim et de Jamila trouva une assise nouvelle. Ils n’étaient plus deux personnes qui s’apprivoisaient. Ils étaient deux êtres qui s’étaient choisis, et qui apprenaient maintenant ce que ce choix impliquait au quotidien.
+
+Ils se voyaient plusieurs fois par semaine. Parfois chez lui, parfois chez elle. Parfois simplement pour marcher le long de la mer, main dans la main, en parlant de choses ordinaires. Le désir n’avait pas faibli. Il s’était seulement installé dans une familiarité plus profonde. Ils connaissaient maintenant le corps de l’autre. Ses réactions. Ses silences. Ses élans. Et cette connaissance, loin d’émousser le trouble, l’avait rendu plus précis, plus tendre.
+
+Un soir, alors qu’ils étaient allongés dans le lit de Salim, Jamila traça du doigt une cicatrice discrète sur son épaule.
+
+— Je ne l’avais jamais remarquée.
+
+— Chute d’échelle. Il y a longtemps. Sur un chantier.
+
+Elle sourit contre sa peau.
+
+— Tu collectionnes les preuves que tu as vécu.
+
+— Et toi, tu collectionnes les images de ce qui reste. On est bien assortis.
+
+Ils rirent tout bas. Puis le rire se perdit dans un baiser. Plus tard, alors qu’elle s’endormait contre lui, Salim resta éveillé un moment, conscient de la rareté de ce qu’il tenait. Non pas une passion aveugle. Quelque chose de plus solide. Un amour qui avait appris à regarder en face les failles de l’autre sans chercher à les corriger.
+
+Ce fut au début du mois de janvier que l’épreuve arriva.
+
+Salim reçut un appel de Paris. Un ancien collaborateur lui proposait de diriger la restauration d’un important riad-palais transformé en maison d’hôtes de prestige, à Marrakech d’abord, puis éventuellement un second projet en Andalousie. Le contrat était de huit mois minimum. Peut-être plus. Le salaire, les moyens, la reconnaissance professionnelle : tout était au rendez-vous. C’était, objectivement, une belle opportunité.
+
+Il en parla à Jamila le soir même, chez elle.
+
+Ils étaient assis à sa petite table de cuisine. Elle l’écouta jusqu’au bout, sans l’interrompre. Puis elle posa sa tasse.
+
+— Et tu veux y aller ?
+
+La question était simple. Elle n’était pas accusatrice. Elle demandait simplement la vérité.
+
+— Une partie de moi oui, répondit-il honnêtement. C’est un beau projet. Et ça fait longtemps que je n’ai pas eu un chantier de cette ampleur. Mais l’autre partie… l’autre partie pense à toi. À nous. À ce que huit mois de distance signifieraient.
+
+Jamila regarda un moment par la fenêtre. Les lumières de Maârif scintillaient.
+
+— Je ne te demanderai jamais de renoncer à quelque chose d’important pour moi, dit-elle finalement. Je sais ce que c’est de construire une vie autour de son travail. Je ne veux pas devenir celle qui retient.
+
+— Et moi, je ne veux pas devenir celui qui part en te laissant gérer seule le vide.
+
+Ils se turent. Le problème était là, posé entre eux, sans artifice. Pas une trahison. Pas un drame. Juste la réalité d’une décision qui allait tester la solidité de ce qu’ils avaient bâti.
+
+Dans les jours qui suivirent, ils en parlèrent plusieurs fois. Avec calme. Avec précision. Parfois avec une pointe d’inquiétude qu’ils ne cherchaient plus à dissimuler. Jamila lui dit qu’elle avait peur de la distance. Non pas par manque de confiance, mais parce qu’elle savait combien les absences prolongées pouvaient éroder même les liens solides. Salim lui dit qu’il avait peur, lui aussi. Peur de regretter d’être parti. Peur de regretter de rester. Peur, surtout, de la blesser quoi qu’il décide.
+
+Un dimanche après-midi, ils allèrent jusqu’à la corniche. Le vent était fort. Ils marchèrent longtemps sans parler. Puis Jamila s’arrêta et se tourna vers lui.
+
+— Est-ce que tu m’aimes assez pour partir sans que ça nous détruise ? demanda-t-elle. Et est-ce que je t’aime assez pour te laisser partir sans te faire porter le poids de ma peur ?
+
+Salim la regarda. Le vent soulevait ses cheveux. Ses yeux étaient clairs, exigeants, tendres.
+
+— Oui, répondit-il. Aux deux questions. Mais je ne veux pas décider seul. Parce que ce n’est plus seulement ma vie. C’est la nôtre.
+
+Elle prit sa main.
+
+— Alors on décide ensemble. Même si la décision est difficile.
+
+Ils passèrent la semaine suivante à peser. Salim téléphona à son associé, à l’ancien collaborateur, à un ami architecte qui avait vécu une situation semblable. Jamila, de son côté, avança sur son livre, accepta un reportage à Rabat, et passa une soirée entière à écrire dans son carnet tout ce qu’elle n’osait pas encore formuler à voix haute.
+
+Un soir, elle arriva chez lui avec une proposition claire.
+
+— Si tu acceptes, dit-elle, on organise les choses. Tu pars pour les premiers mois. On se voit dès que possible. Je viens à Marrakech quand je peux. Tu reviens dès que le chantier le permet. Et on évalue. Ensemble. Au bout de trois mois. Si la distance nous abîme, on ajuste. Si elle tient, on continue. Mais on ne fait pas semblant que ce sera facile. Et on ne fait pas non plus semblant que l’amour doit tout sacrifier pour prouver sa force.
+
+Salim l’écouta en silence. Puis il s’approcha et l’embrassa longuement.
+
+— Tu es en train de me montrer ce que j’espérais trouver sans savoir le nommer, dit-il contre ses lèvres. Un amour qui ne me demande pas de me renier. Et qui ne se renie pas non plus.
+
+Elle sourit.
+
+— C’est exactement ça. On ne se sauve pas l’un l’autre. On se choisit. Encore. Même quand c’est compliqué.
+
+Ils passèrent la nuit ensemble. Il y eut de la sensualité, oui. Une étreinte plus intense que d’habitude, comme si leurs corps avaient besoin de se rappeler l’un à l’autre avant l’éventuelle distance. Mais il y eut aussi beaucoup de paroles. Des projets. Des peurs avouées. Des rires. À un moment, Jamila se moqua gentiment de la façon dont il pliait ses chemises. Il rétorqua qu’elle laissait toujours ses carnets ouverts un peu partout. Ils rirent. Puis ils se turent, enlacés, conscients que l’amour mature n’était pas l’absence de difficultés. C’était la capacité de les traverser sans se mentir.
+
+Au matin, Salim appela Paris.
+
+Il accepta le projet. Pour six mois d’abord. Avec la possibilité de revenir plus souvent que prévu. Et surtout, avec la certitude que la décision avait été prise à deux.
+
+Lorsqu’il raccrocha, Jamila était derrière lui. Elle passa ses bras autour de sa taille et posa son front entre ses omoplates.
+
+— On va y arriver, murmura-t-elle.
+
+— Oui. Parce qu’on a déjà appris le plus difficile : rester vrais l’un avec l’autre.
+
+Dehors, le soleil d’hiver entrait par la fenêtre. À l’intérieur, deux êtres qui s’étaient rencontrés par hasard dans un train tenaient maintenant entre leurs mains quelque chose de rare : un amour assez solide pour affronter le réel, assez souple pour ne pas se briser, et assez conscient pour savoir que le plus beau n’était pas d’éviter les épreuves, mais de les traverser ensemble.
+
+La rose était pleinement ouverte. Ses pétales ne tremblaient plus. Ils savaient désormais supporter le vent.`;
+addCh(11,'Le grand amour',PART11);
+const PART12=`Six mois plus tard, le train ralentit en approchant de Casa-Voyageurs.
+
+Salim était debout dans le couloir depuis plusieurs minutes déjà. Il n’avait pas réussi à rester assis. Par la vitre, il reconnaissait les mêmes hangars, les mêmes terrains vagues, les mêmes immeubles bas qu’il avait vus, un an plus tôt, en sens inverse. Seulement, cette fois, il ne rentrait pas d’un simple chantier. Il rentrait d’une absence choisie, traversée, et tenue.
+
+Sur le quai, Jamila attendait.
+
+Elle portait la même robe couleur terre cuite que le jour de leur première rencontre. Pas par calcul. Parce qu’elle l’avait retrouvée au fond d’une armoire en rangeant, et que quelque chose en elle avait simplement décidé que c’était le bon jour pour la remettre. Ses cheveux étaient relevés, imparfaits, comme toujours. Dans ses mains, elle tenait un petit bouquet de roses. Cette fois, elles étaient ouvertes.
+
+Lorsqu’il descendit, leurs regards se trouvèrent immédiatement. Il n’y eut pas de course. Pas de scène. Seulement deux personnes qui s’étaient attendues l’une l’autre assez longtemps pour ne plus avoir besoin de prouver quoi que ce soit. Elle avança. Il avança. Et lorsqu’ils se prirent dans les bras, ce fut avec la simplicité de ceux qui savent enfin où est leur place.
+
+— Tu es là, murmura-t-elle contre son épaule.
+
+— Je suis là.
+
+Ils restèrent ainsi un long moment, au milieu du flux des voyageurs, indifférents aux regards. Puis elle se recula juste assez pour lui montrer les roses.
+
+— Elles sont complètement ouvertes, cette fois.
+
+Il sourit.
+
+— Ça leur a pris du temps.
+
+— Oui. Mais elles y sont arrivées.
+
+Ils quittèrent la gare ensemble. Dehors, Casablanca était baignée d’une lumière de fin d’après-midi, la même lumière ambrée qui avait un jour traversé les vitres d’un wagon entre deux villes. Rien n’avait changé. Et pourtant, tout était différent.
+
+Dans les mois qui avaient précédé, ils avaient tenu leur pari. Salim avait travaillé à Marrakech. Jamila était venue le rejoindre trois fois. Lui était remonté à Casablanca autant que le chantier le permettait. Ils avaient parlé, parfois avec difficulté, parfois avec une facilité retrouvée. Ils avaient douté. Ils avaient manqué l’un de l’autre. Et à chaque fois, ils avaient choisi de ne pas laisser le manque décider à leur place. Au bout de trois mois, lors de leur évaluation promise, ils s’étaient regardés dans un petit café de la place Jemaa el-Fna et avaient simplement dit : « On continue. » Sans fanfare. Avec la certitude tranquille de ceux qui ont vérifié.
+
+Maintenant, le projet était terminé. Salim rentrait pour de bon. Et quelque chose d’autre commençait.
+
+Ils dînèrent ce soir-là chez elle. Sur la table, les roses ouvertes. Autour d’eux, l’appartement de Maârif qui, peu à peu, avait aussi pris des allures de chez lui : un livre oublié, une chemise accrochée, un mug qu’il préférait. Après le repas, ils s’installèrent sur le canapé. La conversation glissa naturellement vers l’avenir.
+
+— Je ne veux plus de solutions provisoires, dit finalement Salim. Ni de demi-mesures. Je veux qu’on construise quelque chose de clair. Ensemble.
+
+Jamila le regarda. Il n’y avait plus de peur dans ses yeux. Seulement une attention profonde.
+
+— Qu’est-ce que tu proposes ?
+
+— Que tu viennes vivre avec moi. Ou que je vienne ici. Ou qu’on trouve un endroit qui soit vraiment le nôtre. Peu importe la forme. Ce qui compte, c’est qu’on arrête de faire comme si nos vies étaient encore parallèles. Elles ne le sont plus.
+
+Elle prit le temps de répondre. Non par hésitation. Par respect pour le poids des mots.
+
+— Oui, dit-elle. Je veux ça. Un endroit à nous. Une vie où l’on ne se quitte plus seulement pour des raisons professionnelles. Où l’on se choisit aussi dans les matins ordinaires. Dans les courses. Dans les silences. Dans tout ce qui n’a rien de spectaculaire.
+
+Il lui prit la main.
+
+— Tu te souviens de ce que tu m’as dit dans le train, la première fois ? Que les choses qui ne sont pas spectaculaires sont souvent les plus intéressantes.
+
+Elle sourit.
+
+— Je m’en souviens. Et je sais maintenant que c’est vrai aussi pour l’amour.
+
+Ils restèrent longtemps ainsi, mains jointes, le silence de nouveau plein, mais d’une plénitude différente. Plus tard, ils s’embrassèrent. Lentement. Avec cette connaissance intime de l’autre qui rend chaque geste à la fois familier et toujours nouveau. Puis ils se couchèrent. Non pas pour fuir le monde. Pour l’habiter autrement.
+
+Dans les semaines qui suivirent, ils trouvèrent un appartement. Ni tout à fait Anfa, ni tout à fait Maârif. Quelque part entre les deux, avec une terrasse assez grande pour des plantes et une vue lointaine sur la mer. Ils emménagèrent sans précipitation. Chaque objet trouva sa place. Chaque habitude s’ajusta à l’autre. Il y eut des accrochages mineurs — la façon de ranger, le volume de la musique, les horaires de travail — et chaque fois, ils parlèrent. Parce qu’ils avaient appris que le silence, s’il n’était pas choisi, pouvait redevenir une distance.
+
+Un dimanche matin, plusieurs mois plus tard, ils prirent le train.
+
+Pas pour une obligation. Pour le plaisir. Direction Rabat, simplement. Une journée. Des rues à marcher. Un déjeuner. Le bruit des rails sous leurs pieds.
+
+Dans le wagon, ils s’installèrent côté fenêtre, l’un en face de l’autre. Exactement comme la première fois. Jamila sortit un carnet. Salim sortit un livre qu’il n’avait, une fois encore, pas vraiment l’intention de lire. Dehors, les paysages défilaient. Oliviers. Collines. Lumière.
+
+À un moment, elle leva les yeux et le regarda.
+
+— Tu te souviens ?
+
+Il n’eut pas besoin de demander de quoi.
+
+— Oui. Tu écrivais. Moi, je faisais semblant de lire. Et quelque chose a commencé sans qu’on le sache.
+
+Elle pencha la tête.
+
+— Est-ce que tu crois au destin ?
+
+Il réfléchit.
+
+— Je crois aux rencontres. Et je crois qu’on a le choix de ce qu’on en fait ensuite. Le train nous a mis l’un en face de l’autre. Mais c’est nous qui avons décidé de ne pas descendre trop vite. De rester. De parler. De douter. De revenir. De s’ouvrir.
+
+Elle sourit.
+
+— Comme une rose.
+
+— Comme une rose.
+
+Ils se turent. Le train avançait. Autour d’eux, d’autres voyageurs parlaient, dormaient, regardaient par la fenêtre. Des vies qui se croisaient, le temps d’un trajet. Certaines resteraient des parenthèses. D’autres, peut-être, deviendraient des histoires. On ne pouvait jamais savoir à l’avance.
+
+Salim tendit la main. Jamila y posa la sienne. Leurs doigts s’entrelacèrent avec la facilité des gestes devenus nécessaires. Dehors, le paysage changeait. À l’intérieur, plus rien n’était en suspens.
+
+La rose avait fleuri. Non pas en un instant de grâce. Mais au fil des jours, des silences, des peurs traversées, des corps appris, des mots justes, des retours choisis. Elle avait tenu sous le vent. Elle avait attendu la lumière. Et maintenant, pleinement ouverte, elle n’avait plus besoin de prouver sa beauté. Elle existait. Simplement. Fortement. À sa place.
+
+Le train continua sa route. Et quelque part, entre deux gares, deux êtres qui s’étaient un jour rencontrés par hasard savaient enfin que le véritable voyage n’était pas celui des rails. C’était celui qu’ils avaient accepté de faire l’un vers l’autre. Lentement. Courageusement. Jusqu’au bout.`;
+addCh(12,'Le destin des roses',PART12);
+
+/* Import : repère « PARTIE X — TITRE » dans les fichiers .txt/.md */
+function parse(txt){
+  const out={},H=/^[#*\s]*PARTIE\s+([IVXLC]+)\s*[—–-]\s*(.+?)[*\s]*$/i;let k=null;
+  for(let l of txt.split(/\r?\n/)){
+    const m=l.match(H);
+    if(m){k=rn(m[1].toUpperCase());let t=m[2].replace(/\*+/g,'').replace(/\s*LES ROSES DU DESTIN\s*$/i,'').trim();out[k]={title:t.charAt(0)+t.slice(1).toLowerCase(),text:''};continue}
+    if(!k||/^[#*\s]*LES ROSES DU DESTIN[*\s]*$/i.test(l)||/^\s*-{3,}\s*$/.test(l))continue;
+    if(/^\*[^*].*\*$/.test(l.trim())&&!out[k].text)continue;
+    out[k].text+=l+'\n';
+  }
+  /* Cas d’un fichier où la partie II suit la I sans titre : on la sépare */
+  const cut=out[1]&&out[1].text.indexOf('Le train n’avait pas encore repris');
+  if(out[2]&&!out[2].text.trim()&&cut>0){out[2].text=out[1].text.slice(cut);out[1].text=out[1].text.slice(0,cut)}
+  return out;
+}
+$('bImp').onclick=()=>$('fImp').click();
+$('fImp').onchange=async e=>{
+  let n=0;
+  for(const f of e.target.files){const o=parse(await f.text());for(const k in o)if(o[k].text.trim()){addCh(+k,o[k].title,o[k].text);n++}}
+  $('impMsg').textContent=n?n+' chapitre(s) importé(s). Total : '+CH.length+'.':'Aucun titre « PARTIE … — … » trouvé.';
+  e.target.value='';buildToc();if(cur>=0)show(cur);
+};
+
+function apply(){
+  const r=document.documentElement;r.dataset.theme=S.theme==='clair'?'':S.theme;
+  const ff={Lora:"Lora,Georgia,serif","Cormorant Garamond":"'Cormorant Garamond',Georgia,serif",Georgia:"Georgia,serif",Merriweather:"Merriweather,Georgia,serif","Playfair Display":"'Playfair Display',Georgia,serif",Inter:"Inter,system-ui,sans-serif"};
+  r.style.setProperty('--ff',ff[S.font]||ff.Lora);
+  r.style.setProperty('--fs',S.fs+'px');r.style.setProperty('--lh',S.lh);r.style.setProperty('--w',S.w+'px');
+  r.style.setProperty('--ps',S.ps+'em');r.style.setProperty('--ta',S.ta);r.style.setProperty('--ind',S.ind);
+  $('page').classList.toggle('dc',S.dc==='1');
+  $('vFs').textContent=S.fs+' px';$('vLh').textContent=(+S.lh).toFixed(2);$('vW').textContent=S.w+' px';$('vPs').textContent=(+S.ps).toFixed(1)+' em';$('vSp').textContent=S.sp+' px/s';$('sSp').value=S.sp;
+  for(const [id,key] of [['sTheme','theme'],['sTa','ta'],['sInd','ind'],['sDc','dc']])
+    $(id).querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',b.dataset.v===String(S[key])));
+  $('sFont').value=S.font;$('sFs').value=S.fs;$('sLh').value=S.lh;$('sW').value=S.w;$('sPs').value=S.ps;
+  $('sTitle').value=S.title;$('sAuth').value=S.auth;$('sSub').value=S.sub;
+  $('cTitle').textContent=S.title;$('cAuth').textContent=S.auth;$('cSub').textContent=S.sub;
+  $('bt').textContent=cur>=0?S.title:'';document.title=S.title+' — '+S.auth;
+  save();
+}
+const bindSeg=(id,key)=>$(id).onclick=e=>{const b=e.target.closest('.btn');if(b){S[key]=b.dataset.v;apply()}};
+bindSeg('sTheme','theme');bindSeg('sTa','ta');bindSeg('sInd','ind');bindSeg('sDc','dc');
+[['sFont','font'],['sFs','fs'],['sLh','lh'],['sW','w'],['sPs','ps'],['sSp','sp'],['sTitle','title'],['sAuth','auth'],['sSub','sub']].forEach(([id,k])=>$(id).oninput=e=>{S[k]=e.target.value;apply()});
+$('bReset').onclick=()=>{S={...DEF};apply()};
+
+function buildToc(){
+  $('tocList').innerHTML='';
+  CH.forEach((c,i)=>{const b=document.createElement('button');b.className='toc-i'+(i===cur?' cur':'');
+    const s=document.createElement('small');s.textContent='Partie '+c.n;b.append(s,c.title);
+    b.onclick=()=>{show(i);closeAll()};$('tocList').append(b)});
+}
+function show(i){
+  setAuto(false);cur=i;const c=CH[i];$('cover').style.display='none';$('read').style.display='block';
+  const pg=$('page');pg.innerHTML='';
+  const a=document.createElement('p');a.className='pn';a.textContent='Partie '+c.n;
+  const h=document.createElement('h3');h.textContent=c.title;pg.append(a,h);
+  c.text.split(/\n\s*\n/).forEach((t,j)=>{t=t.trim();if(!t)return;const p=document.createElement('p');p.textContent=t;
+    if(j===0)p.className='first';else if(/^[—–-]\s/.test(t))p.className='dlg';pg.append(p)});
+  $('prev').style.visibility=i>0?'visible':'hidden';$('next').style.visibility=i<CH.length-1?'visible':'hidden';
+  buildToc();apply();window.scrollTo(0,0);prog();
+  try{localStorage.setItem('rdt-cur',i)}catch(e){}
+}
+function prog(){const h=document.documentElement;const m=h.scrollHeight-innerHeight;$('prog').style.width=(cur>=0&&m>0?scrollY/m*100:0)+'%'}
+addEventListener('scroll',prog);
+$('start').onclick=()=>{let i=0;try{i=Math.min(+localStorage.getItem('rdt-cur')||0,CH.length-1)}catch(e){}show(i)};
+$('prev').onclick=()=>show(cur-1);$('next').onclick=()=>show(cur+1);
+const closeAll=()=>{$('toc').classList.remove('open');$('set').classList.remove('open');$('ov').style.display='none';document.body.style.paddingBottom=''};
+const openP=id=>{closeAll();$(id).classList.add('open');if(id==='toc')$('ov').style.display='block';else document.body.style.paddingBottom='46vh'};
+$('bToc').onclick=()=>openP('toc');$('bSet').onclick=()=>$('set').classList.contains('open')?closeAll():openP('set');$('ov').onclick=closeAll;document.querySelectorAll('.panel .x').forEach(b=>b.onclick=closeAll);
+let auto=false,last=0,acc=0;
+function tick(t){if(!auto)return;const dt=Math.min(t-last,100)/1000;last=t;acc+=S.sp*dt;const n=Math.floor(acc);if(n){scrollBy(0,n);acc-=n}
+ if(innerHeight+scrollY>=document.documentElement.scrollHeight-2){setAuto(false);return}requestAnimationFrame(tick)}
+function setAuto(v){auto=!!v&&cur>=0;$('bPlay').textContent=auto?'⏸':'▶';$('bPlay').classList.toggle('on',auto);if(auto){last=performance.now();acc=0;requestAnimationFrame(tick)}}
+$('bPlay').onclick=()=>setAuto(!auto);
+['wheel','touchmove'].forEach(ev=>addEventListener(ev,e=>{if(auto&&!e.target.closest('.panel'))setAuto(false)},{passive:true}));
+addEventListener('keydown',e=>{if(e.key==='Escape')closeAll();if(cur>=0&&!/INPUT|SELECT/.test(e.target.tagName)){if(e.key==='ArrowRight'&&cur<CH.length-1)show(cur+1);if(e.key==='ArrowLeft'&&cur>0)show(cur-1)}});
+buildToc();apply();
+</script>
+</body>
+</html>
